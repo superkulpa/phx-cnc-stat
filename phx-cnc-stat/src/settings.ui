@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SettingsDialog</class>
+ <widget class="QDialog" name="SettingsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>567</width>
+    <height>418</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Настройки</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>FTP</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Архивирование</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Отчет</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Журнал</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="mFTPTab">
+      <attribute name="title">
+       <string>FTP</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mFTPHostLabel">
+         <property name="text">
+          <string>Сервер</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mFTPHostEdit"/>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="mFTPPortLabel">
+         <property name="text">
+          <string>Порт</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QSpinBox" name="mFTPPortEdit">
+         <property name="maximum">
+          <number>65535</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="mFTPLoginLabel">
+         <property name="text">
+          <string>Логин</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="3">
+        <widget class="QLineEdit" name="mFTPLoginEdit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mFTPPasswordLabel">
+         <property name="text">
+          <string>Пароль</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="3">
+        <widget class="QLineEdit" name="mFTPPasswordEdit"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="mFTPDirLabel">
+         <property name="text">
+          <string>Каталог</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="3">
+        <widget class="QLineEdit" name="mFTPDirEdit"/>
+       </item>
+       <item row="4" column="0" colspan="4">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>323</width>
+           <height>103</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mArchiveTab">
+      <attribute name="title">
+       <string>Архивирование</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="1" column="0">
+        <widget class="QLabel" name="mCreateScriptLabel">
+         <property name="text">
+          <string>Путь к скрипту создания архива</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="mCreateScriptEdit"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="mArchiverPathLabel">
+         <property name="text">
+          <string>Путь к архиватору</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="mArchiverPathEdit"/>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>308</width>
+           <height>155</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mArchiveNameLabel">
+         <property name="text">
+          <string>Имя архива на FTP-сервере</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="mArchiveNameEdit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mReportTab">
+      <attribute name="title">
+       <string>Отчет</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mHeaderReportLabel">
+         <property name="text">
+          <string>Шаблон шапки отчета</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mHeaderReportEdit">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="mFooterReportLabel">
+         <property name="text">
+          <string>Шаблон подвала отчета</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="mFooterReportEdit">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mSectionReportLabel">
+         <property name="text">
+          <string>Шаблон секции отчета</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="mSectionReportEdit">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="mParamReportLabel">
+         <property name="text">
+          <string>Шаблон поля секции</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="mParamReportEdit">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QLabel" name="mRemortMacrosLabel">
+         <property name="text">
+          <string>Доступные макросы в шаблоне отчетов</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <widget class="QTableWidget" name="mRemortMacrosTable">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Новая строка</string>
+          </property>
+         </row>
+         <column>
+          <property name="text">
+           <string>Новый столбец</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Новый столбец</string>
+          </property>
+         </column>
+         <item row="0" column="0">
+          <property name="text">
+           <string>{Start Date}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="0" column="1">
+          <property name="text">
+           <string>Начальная дата отчета</string>
+          </property>
+         </item>
+         <item row="1" column="0">
+          <property name="text">
+           <string>{End Date}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="1" column="1">
+          <property name="text">
+           <string>Конечная дата отчета</string>
+          </property>
+         </item>
+         <item row="2" column="0">
+          <property name="text">
+           <string>{Section}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="2" column="1">
+          <property name="text">
+           <string>Данные по секции</string>
+          </property>
+         </item>
+         <item row="3" column="0">
+          <property name="text">
+           <string>{Section Descr}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="3" column="1">
+          <property name="text">
+           <string>Описание секции</string>
+          </property>
+         </item>
+         <item row="4" column="0">
+          <property name="text">
+           <string>{Params}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="4" column="1">
+          <property name="text">
+           <string>Конейнер для полей секции</string>
+          </property>
+         </item>
+         <item row="5" column="0">
+          <property name="text">
+           <string>{Param Name}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="5" column="1">
+          <property name="text">
+           <string>Название параметра секции</string>
+          </property>
+         </item>
+         <item row="6" column="0">
+          <property name="text">
+           <string>{Param Value}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="6" column="1">
+          <property name="text">
+           <string>Значение параметра секции</string>
+          </property>
+         </item>
+         <item row="7" column="0">
+          <property name="text">
+           <string>{Param Descr}</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </item>
+         <item row="7" column="1">
+          <property name="text">
+           <string>Описание параметра секции</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mLogPeriodTab">
+      <attribute name="title">
+       <string>Журнал</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mLogPeriodLabel">
+         <property name="text">
+          <string>Хранить журнал не более (дней)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="mLogPeriodEdit">
+         <property name="specialValueText">
+          <string>Бессрочно</string>
+         </property>
+         <property name="maximum">
+          <number>365</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>listWidget</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mFTPHostEdit</tabstop>
+  <tabstop>mFTPPortEdit</tabstop>
+  <tabstop>mFTPLoginEdit</tabstop>
+  <tabstop>mFTPPasswordEdit</tabstop>
+  <tabstop>mFTPDirEdit</tabstop>
+  <tabstop>mCreateScriptEdit</tabstop>
+  <tabstop>mArchiveNameEdit</tabstop>
+  <tabstop>mArchiverPathEdit</tabstop>
+  <tabstop>mHeaderReportEdit</tabstop>
+  <tabstop>mFooterReportEdit</tabstop>
+  <tabstop>mLogPeriodEdit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>523</x>
+     <y>408</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>503</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>523</x>
+     <y>408</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>503</x>
+     <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>tabWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

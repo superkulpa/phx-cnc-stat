@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<Descriptions>
+<Sections>
+	<General name="Основные параметры" />
+	<Alarms name="Аварии" />
+</Sections>
+<Records>
+  <_1_Control_timeout name="1.Вышло время на включения управления" sec="Alarms" />
+  <_2_Control_not_ready name="2.Нет готовности управления" sec="Alarms" /> 
+  <_3_red_button_pushed name="3.Аварийная блокировка" sec="Alarms" /> 
+  <_4_Drive_not_ready name="4.Нет готовности привод" sec="Alarms" /> 
+  <_5_Limit_YB name="5.Концевик Y-" sec="Alarms" /> 
+  <_6_Limit_XB name="6.Концевик X-" sec="Alarms" /> 
+  <_9_Limit_YF name="9.Концевик Y+" sec="Alarms" /> 
+  <_10_Limit_XF name="10.Концевик X+" sec="Alarms" /> 
+  <_1_5_Displ_X1 name="1.5.Рассогл.оси X1" sec="Alarms" /> 
+  <_1_6_Displ_X2 name="1.6.Рассогл.оси X2" sec="Alarms" /> 
+  <_1_7_Displ_Y name="1.7.Рассогл.оси Y" sec="Alarms" /> 
+  <_1_13_Alternate_axe_alarm name="1.13.Авария доп.оси" sec="Alarms" /> 
+  <_14_Cut_on_timeout name="14.Вышло время на включение реза" sec="Alarms" />   
+  <_15_Cut_fault name="15.Срыв реза" sec="Alarms" /> 
+  <_16_No_gas name="16.Нет давления газов" sec="Alarms" /> 
+  <_17_No_water name="17.Нет давления воды" sec="Alarms" /> 
+  <_18_SVR1_timeout name="18.Авария СВР1" sec="Alarms" />   
+  <_19_Internal_error name="19.Внутренняя ошибка ядра" sec="Alarms" />   
+  <_20_Limit_Z1F name="20.Концевик Z1+" sec="Alarms" />   
+  <_21_Limit_Z2F name="21.Концевик Z2+" sec="Alarms" />   
+  <_22_Limit_Z3F name="22.Концевик Z3+" sec="Alarms" />   
+  <_23_Limit_Z4F name="23.Концевик Z4+" sec="Alarms" />   
+  <_24_Limit_Z5F name="24.Концевик Z5+" sec="Alarms" />   
+  <_24_Limit_Z6F name="25.Концевик Z6+" sec="Alarms" />   
+  <_24_Limit_Z7F name="26.Концевик Z7+" sec="Alarms" />   
+  <_21_Limit_Z8F name="27.Концевик Z8+" sec="Alarms" />   
+  <_1_19_Limit_Z1- name="1.19.Концевик Z1-" sec="Alarms" />  
+  <_1_20_Limit_Z2- name="1.19.Концевик Z2-" sec="Alarms" />  
+  <_1_21_Limit_Z3- name="1.19.Концевик Z3-" sec="Alarms" />  
+  <_1_22_Limit_Z4- name="1.19.Концевик Z4-" sec="Alarms" />  
+  <_1_23_Limit_Z5- name="1.19.Концевик Z5-" sec="Alarms" />    
+  <_28_Touch_timeout name="28.Вышло время на касание листа" sec="Alarms" />   
+  <_29_Marker_not_ready name="29.Нет готовности маркера" sec="Alarms" />   
+  <WorkTime name="Время работы" sec="General" /> 
+  <MPlasmaTime name="Время работы плазмы" sec="General" />  
+  <OxyTime name="Время работы плазмы" sec="General" />  
+  <MOxyime name="Время работы газокислорода" sec="General" />  
+</Records>
+</Descriptions>
