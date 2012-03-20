@@ -38,9 +38,9 @@
   <_1_23_Limit_Z5- name="1.19.Концевик Z5-" sec="Alarms" />    
   <_28_Touch_timeout name="28.Вышло время на касание листа" sec="Alarms" />   
   <_29_Marker_not_ready name="29.Нет готовности маркера" sec="Alarms" />   
-  <WorkTime name="Время работы" sec="General" /> 
-  <MPlasmaTime name="Время работы плазмы" sec="General" />  
-  <OxyTime name="Время работы плазмы" sec="General" />  
-  <MOxyime name="Время работы газокислорода" sec="General" />  
+  <WorkTime name="Время работы" sec="General" type="time"/> 
+  <MPlasmaTime name="Время работы плазмы" sec="General" type="time"/> 
+  <OxyTime name="Время работы плазмы" sec="General" type="time"/>  
+  <MOxyime name="Время работы газокислорода" sec="General" type="time"/> 
 </Records>
 </Descriptions>

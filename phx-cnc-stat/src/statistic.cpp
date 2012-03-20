@@ -9,7 +9,7 @@
 #include <QTextCodec>
 #include <QProgressBar>
 
-#include "engine/engine.h"
+#include "../../include/engine.h"
 
 Statistic::Statistic(QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags)
 {
@@ -74,15 +74,11 @@ void Statistic::onArchiveLoad()
 	}
 
 	QString copyFileName = QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + QFileInfo(fileName).fileName();
-
-	if(QFile::exists(copyFileName))
-		QFile::remove(copyFileName);
-
 	QFile::copy(fileName, copyFileName);
 
 	if (unCompress(copyFileName))
 	{
-		QFile(copyFileName).remove();
+//		QFile(copyFileName).remove();
 
 		QMessageBox::information(this, trUtf8("Внимание"), trUtf8("Архив успешно распакован"));
 	}
@@ -152,7 +148,7 @@ void Statistic::onReport()
 	{
 		const SXReportError& curErrorData = errorList.at(i);
 
-		if ((newItem == NULL) || ((newItem != NULL) && (lastFilename != curErrorData.mFileName)))
+		if (newItem == NULL || newItem != NULL && lastFilename != curErrorData.mFileName)
 		{
 			newItem = new QTreeWidgetItem(ui.mErrorTree);
 			lastFilename = curErrorData.mFileName;
@@ -200,8 +196,6 @@ void Statistic::onCommandStarted(int id)
 			waitTimer = startTimer(1000);
 			break;
 		}
-		default:
-			break;
 	}
 }
 
@@ -256,8 +250,8 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
 					return;
 				}
 
+				break;
 			}
-			break;
 		}
 		case QFtp::Cd:
 		{
@@ -275,9 +269,6 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
 
 			break;
 		}
-		default:
-			break;
-
 	}
 
 	if (mFtp->currentCommand() == QFtp::Get)
@@ -386,22 +377,23 @@ void Statistic::timerEvent(QTimerEvent* e)
 
 				break;
 			}
-			default:
-				break;
-
 		}
 	}
 }
 
 bool Statistic::unCompress(const QString& aArchiveName)
 {
-    QString unpack = "unpack.bat";
-    if (QProcess::execute(unpack) != 0)
+	CXSettings* settings = CXSettings::inst();
+
+	QString archiverPath = settings->value(E_ArchiverPath).toString();
+	archiverPath.replace("[ARCHIVE_NAME]", aArchiveName).replace("[APP_PATH]", QApplication::applicationDirPath());
+
+	if (QProcess::execute(archiverPath) != 0)
 	{
-        QMessageBox::critical(this, trUtf8("Ошибка")
-                              , trUtf8("Не удалось распаковать архив  "));
+		QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось разархивировать архив коммандой:\n[%1]").arg(archiverPath));
 		return false;
 	}
+
 	return true;
 }
 
