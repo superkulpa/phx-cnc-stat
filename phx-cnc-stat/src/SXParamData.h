@@ -30,12 +30,15 @@ struct SXParamData
 	{
 		if (mType == "time")
 		{
-			QTime time;
-			time = time.addSecs(mValue);
+			int hour = 0;
+			int min = 0;
 
-			if (time.hour() <= 0) return time.toString(QObject::trUtf8("mm мин."));
+			hour = mValue / 3600;
+			min = mValue / 60 - hour * 60;
 
-			return time.toString(QObject::trUtf8("hh ч. mm мин."));
+			if (hour <= 0) return QObject::trUtf8("%1 мин.").arg(min);
+
+			return QObject::trUtf8("%1 ч. %2 мин.").arg(hour).arg(min);
 		}
 
 		if (mType == "travel")

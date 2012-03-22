@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "../CXSettings.h"
 #include "../CXSectionDialog.h"
@@ -17,6 +18,12 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 	QMap <QString, SXParamData> paramData;
 
 	QList <SXReportError> errorList = fillParamsData(paramData);
+
+	if (aStartDate >= aEndDate)
+	{
+		QMessageBox::critical(NULL, QObject::trUtf8("Ошибка"), QObject::trUtf8("Не верный интервал времени.\nДата До должна быть позже чем дата От."));
+		return errorList;
+	}
 
 	SXReportError curError;
 
