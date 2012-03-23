@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CNC_stat"
-#define MyAppVersion "1.00"
+#define MyAppVersion "1.01"
 #define MyAppPublisher "Autogenmash"
 #define MyAppURL "www.autogenmash.ru"
 #define MyAppExeName "statistic.exe"
