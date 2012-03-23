@@ -1,15 +1,15 @@
 <?xml version="1"?>
 <Settings>
-	<Param desrc="FTP Host" type="1" value="78.108.81.100"/>
+	<Param desrc="FTP Host" type="1" value="192.168.233.151"/>
 	<Param desrc="FTP Port" type="2" value="21"/>
-	<Param desrc="FTP User" type="3" value="f60550"/>
-	<Param desrc="FTP Password" type="4" value="cfqnFTP192837465"/>
-	<Param desrc="FTP Dir" type="5" value="unitverru/www/"/>
-	<Param desrc="Create Archive Script" type="6" value="script.bat"/>
-	<Param desrc="Archive Path" type="7" value="&quot;C:\Program Files (x86)\WinRAR\rar.exe&quot; x -o+ &quot;[ARCHIVE_NAME]&quot; &quot;[APP_PATH]/logs&quot;"/>
-	<Param desrc="Archive Name" type="8" value="CNC.rar"/>
-	<Param desrc="Start Date" type="9" value="2010-01-30T00:00:00"/>
-	<Param desrc="End Date" type="10" value="2012-03-19T00:00:00"/>
+	<Param desrc="FTP User" type="3" value="ftp"/>
+	<Param desrc="FTP Password" type="4" value="ftp"/>
+	<Param desrc="FTP Dir" type="5" value="pub/updates"/>
+	<Param desrc="Create Archive Script" type="6" value=""/>
+	<Param desrc="Archive Path" type="7" value=""/>
+	<Param desrc="Archive Name" type="8" value=""/>
+	<Param desrc="Start Date" type="9" value="2012-03-02T07:01:00"/>
+	<Param desrc="End Date" type="10" value="2012-03-13T20:00:00"/>
 	<Param desrc="Header Report" type="11" value="header.templ"/>
 	<Param desrc="Footer Report" type="12" value="footer.templ"/>
 	<Param desrc="Section Report" type="13" value="section.templ"/>
