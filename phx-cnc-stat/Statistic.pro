@@ -8,7 +8,8 @@ HEADERS	+=	src/CXSectionDialog.h \
 			src/CXSettingsDialog.h \
 			src/statistic.h \
 			src/SXParamData.h \
-			src/engine/engine.h
+			src/engine/engine.h \
+			src/qttelnet.h
 
 FORMS	+=	src/CXSectionDialog.ui \
 			src/settings.ui \
@@ -19,7 +20,8 @@ SOURCES +=	src/CXSectionDialog.cpp \
 			src/CXSettingsDialog.cpp \
 			src/main.cpp \
 			src/statistic.cpp \
-			src/engine/engine.cpp
+			src/engine/engine.cpp \
+			src/qttelnet.cpp
 
 RESOURCES += src/statistic.qrc
 

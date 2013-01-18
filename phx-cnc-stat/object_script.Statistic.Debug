@@ -1,0 +1,14 @@
+INPUT(
+./debug/CXSectionDialog.o
+./debug/CXSettings.o
+./debug/CXSettingsDialog.o
+./debug/main.o
+./debug/statistic.o
+./debug/engine.o
+./debug/qttelnet.o
+./debug/moc_CXSectionDialog.o
+./debug/moc_CXSettingsDialog.o
+./debug/moc_statistic.o
+./debug/moc_qttelnet.o
+./debug/qrc_statistic.o
+);

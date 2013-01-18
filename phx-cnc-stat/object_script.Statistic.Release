@@ -1,0 +1,14 @@
+INPUT(
+./release/CXSectionDialog.o
+./release/CXSettings.o
+./release/CXSettingsDialog.o
+./release/main.o
+./release/statistic.o
+./release/engine.o
+./release/qttelnet.o
+./release/moc_CXSectionDialog.o
+./release/moc_CXSettingsDialog.o
+./release/moc_statistic.o
+./release/moc_qttelnet.o
+./release/qrc_statistic.o
+);

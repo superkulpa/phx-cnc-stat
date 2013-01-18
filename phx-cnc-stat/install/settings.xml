@@ -1,19 +1,14 @@
 <?xml version="1"?>
 <Settings>
-	<Param desrc="FTP Host" type="1" value="192.168.233.151"/>
-	<Param desrc="FTP Port" type="2" value="21"/>
-	<Param desrc="FTP User" type="3" value="ftp"/>
-	<Param desrc="FTP Password" type="4" value="ftp"/>
-	<Param desrc="FTP Dir" type="5" value="pub/updates"/>
-	<Param desrc="Create Archive Script" type="6" value=""/>
-	<Param desrc="Archive Path" type="7" value=""/>
-	<Param desrc="Archive Name" type="8" value=""/>
-	<Param desrc="Start Date" type="9" value="2012-03-02T07:01:00"/>
-	<Param desrc="End Date" type="10" value="2012-03-13T20:00:00"/>
-	<Param desrc="Header Report" type="11" value="header.templ"/>
-	<Param desrc="Footer Report" type="12" value="footer.templ"/>
-	<Param desrc="Section Report" type="13" value="section.templ"/>
-	<Param desrc="Section Param Report" type="14" value="param.templ"/>
-	<Param desrc="Days to keep files" type="15" value="0"/>
-	<Param desrc="Ignored Sections" type="16" value=""/>
+	<Param desrc="FTP Host" type="1" value="192.168.233.51"/>
+	<Param desrc="FTP User" type="2" value="cust"/>
+	<Param desrc="FTP Password" type="3" value="cust"/>
+	<Param desrc="Start Date" type="4" value="2022-01-16T07:01:00"/>
+	<Param desrc="End Date" type="5" value="2022-01-16T20:00:00"/>
+	<Param desrc="Header Report" type="6" value="header.templ"/>
+	<Param desrc="Footer Report" type="7" value="footer.templ"/>
+	<Param desrc="Section Report" type="8" value="section.templ"/>
+	<Param desrc="Section Param Report" type="9" value="param.templ"/>
+	<Param desrc="Days to keep files" type="10" value="0"/>
+	<Param desrc="Ignored Sections" type="11" value=""/>
 </Settings>
