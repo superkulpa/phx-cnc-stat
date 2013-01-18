@@ -19,14 +19,8 @@ void CXSettingsDialog::showEvent(QShowEvent*)
 	CXSettings* settings = CXSettings::inst();
 
 	ui.mFTPHostEdit->setText(settings->value(E_FTPHost).toString());
-	ui.mFTPPortEdit->setValue(settings->value(E_FTPPort).toInt());
-	ui.mFTPLoginEdit->setText(settings->value(E_FTPUser).toString());
-	ui.mFTPPasswordEdit->setText(settings->value(E_FTPPassword).toString());
-	ui.mFTPDirEdit->setText(settings->value(E_FTPDir).toString());
-
-	ui.mArchiverPathEdit->setText(settings->value(E_ArchiverPath).toString());
-	ui.mCreateScriptEdit->setText(settings->value(E_CreateArchiveScript).toString());
-	ui.mArchiveNameEdit->setText(settings->value(E_ArchiveName).toString());
+	ui.mTelnetLoginEdit->setText(settings->value(E_TelnetUser).toString());
+	ui.mTelnetPasswordEdit->setText(settings->value(E_TelnetPassword).toString());
 
 	ui.mHeaderReportEdit->setText(settings->value(E_HeaderReport).toString());
 	ui.mFooterReportEdit->setText(settings->value(E_FooterReport).toString());
@@ -40,15 +34,9 @@ void CXSettingsDialog::accept()
 {
 	CXSettings* settings = CXSettings::inst();
 
-	settings->setValue(E_FTPHost,		ui.mFTPHostEdit->text());
-	settings->setValue(E_FTPPort,		ui.mFTPPortEdit->value());
-	settings->setValue(E_FTPUser,		ui.mFTPLoginEdit->text());
-	settings->setValue(E_FTPPassword,	ui.mFTPPasswordEdit->text());
-	settings->setValue(E_FTPDir,		ui.mFTPDirEdit->text());
-
-	settings->setValue(E_ArchiverPath,			ui.mArchiverPathEdit->text());
-	settings->setValue(E_CreateArchiveScript,	ui.mCreateScriptEdit->text());
-	settings->setValue(E_ArchiveName,			ui.mArchiveNameEdit->text());
+	settings->setValue(E_FTPHost,		      ui.mFTPHostEdit->text());
+	settings->setValue(E_TelnetUser,		  ui.mTelnetLoginEdit->text());
+	settings->setValue(E_TelnetPassword,	ui.mTelnetPasswordEdit->text());
 
 	settings->setValue(E_HeaderReport,			ui.mHeaderReportEdit->text());
 	settings->setValue(E_FooterReport,			ui.mFooterReportEdit->text());

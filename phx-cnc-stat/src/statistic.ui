@@ -219,9 +219,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="mErrorGroupBox">
+    <widget class="QGroupBox" name="mCurOperGroupBox">
      <property name="title">
-      <string>Ошибки обработки</string>
+      <string>Текущая операция</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
@@ -231,21 +231,13 @@
        <number>5</number>
       </property>
       <item>
-       <widget class="QTreeWidget" name="mErrorTree">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>100</height>
-         </size>
+       <widget class="QLabel" name="curOperationLabel">
+        <property name="text">
+         <string>Нет текущих операций</string>
         </property>
-        <attribute name="headerVisible">
-         <bool>false</bool>
-        </attribute>
-        <column>
-         <property name="text">
-          <string notr="true">1</string>
-         </property>
-        </column>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
        </widget>
       </item>
      </layout>
@@ -261,8 +253,6 @@
    <header>QtWebKit/QWebView</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="statistic.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

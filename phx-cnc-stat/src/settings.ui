@@ -14,42 +14,6 @@
    <string>Настройки</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QListWidget" name="listWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>150</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>FTP</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Архивирование</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Отчет</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Журнал</string>
-      </property>
-     </item>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
@@ -63,8 +27,11 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="mFTPTab">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
-       <string>FTP</string>
+       <string>Сеть</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
@@ -77,23 +44,6 @@
        <item row="0" column="1">
         <widget class="QLineEdit" name="mFTPHostEdit"/>
        </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="mFTPPortLabel">
-         <property name="text">
-          <string>Порт</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QSpinBox" name="mFTPPortEdit">
-         <property name="maximum">
-          <number>65535</number>
-         </property>
-         <property name="value">
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="mFTPLoginLabel">
          <property name="text">
@@ -101,8 +51,8 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" colspan="3">
-        <widget class="QLineEdit" name="mFTPLoginEdit"/>
+       <item row="1" column="1" colspan="2">
+        <widget class="QLineEdit" name="mTelnetLoginEdit"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="mFTPPasswordLabel">
@@ -111,20 +61,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1" colspan="3">
-        <widget class="QLineEdit" name="mFTPPasswordEdit"/>
+       <item row="2" column="1" colspan="2">
+        <widget class="QLineEdit" name="mTelnetPasswordEdit"/>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="mFTPDirLabel">
-         <property name="text">
-          <string>Каталог</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" colspan="3">
-        <widget class="QLineEdit" name="mFTPDirEdit"/>
-       </item>
-       <item row="4" column="0" colspan="4">
+       <item row="3" column="0" colspan="3">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -136,56 +76,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="mArchiveTab">
-      <attribute name="title">
-       <string>Архивирование</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="1" column="0">
-        <widget class="QLabel" name="mCreateScriptLabel">
-         <property name="text">
-          <string>Путь к скрипту создания архива</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="mCreateScriptEdit"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="mArchiverPathLabel">
-         <property name="text">
-          <string>Путь к архиватору</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="mArchiverPathEdit"/>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>308</width>
-           <height>155</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="mArchiveNameLabel">
-         <property name="text">
-          <string>Имя архива на FTP-сервере</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="mArchiveNameEdit"/>
        </item>
       </layout>
      </widget>
@@ -467,19 +357,45 @@
      </widget>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>Сеть</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Отчет</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Журнал</string>
+      </property>
+     </item>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>listWidget</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>mFTPHostEdit</tabstop>
-  <tabstop>mFTPPortEdit</tabstop>
-  <tabstop>mFTPLoginEdit</tabstop>
-  <tabstop>mFTPPasswordEdit</tabstop>
-  <tabstop>mFTPDirEdit</tabstop>
-  <tabstop>mCreateScriptEdit</tabstop>
-  <tabstop>mArchiveNameEdit</tabstop>
-  <tabstop>mArchiverPathEdit</tabstop>
+  <tabstop>mTelnetLoginEdit</tabstop>
+  <tabstop>mTelnetPasswordEdit</tabstop>
   <tabstop>mHeaderReportEdit</tabstop>
   <tabstop>mFooterReportEdit</tabstop>
   <tabstop>mLogPeriodEdit</tabstop>

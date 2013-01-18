@@ -9,15 +9,10 @@ enum eSettingType
 {
 	E_None = 0,
 
-	E_FTPHost,				//!< Адрес FTP-сервера.
-	E_FTPPort,				//!< Порт для FTP-соединения.
-	E_FTPUser,				//!< Логин для FTP-соединения.
-	E_FTPPassword,			//!< Пароль для FTP-соединения.
-	E_FTPDir,				//!< Директория для FTP-соединения.
+	E_FTPHost,				//!< Адрес сервера.
 
-	E_CreateArchiveScript,	//!< Путь к скрипту создания архива.
-	E_ArchiverPath,			//!< Путь к архиватору.
-	E_ArchiveName,			//!< Имя архива на FTP-сервере.
+	E_TelnetUser,				//!< Логин для Telnet-соединения.
+	E_TelnetPassword,		//!< Пароль для Telnet-соединения.
 
 	E_StartDate,			//!< Дата для левой границы интервала отбора.
 	E_EndDate,				//!< Дата для правой границы интервала отбора.

@@ -18,13 +18,8 @@ CXSettings* CXSettings::inst()
 CXSettings::CXSettings()
 {
 	mTypeDescription.insert(E_FTPHost,				"FTP Host");
-	mTypeDescription.insert(E_FTPPort,				"FTP Port");
-	mTypeDescription.insert(E_FTPUser,				"FTP User");
-	mTypeDescription.insert(E_FTPPassword,			"FTP Password");
-	mTypeDescription.insert(E_FTPDir,				"FTP Dir");
-	mTypeDescription.insert(E_CreateArchiveScript,	"Create Archive Script");
-	mTypeDescription.insert(E_ArchiverPath,			"Archive Path");
-	mTypeDescription.insert(E_ArchiveName,			"Archive Name");
+	mTypeDescription.insert(E_TelnetUser,			"FTP User");
+	mTypeDescription.insert(E_TelnetPassword,	"FTP Password");
 	mTypeDescription.insert(E_StartDate,			"Start Date");
 	mTypeDescription.insert(E_EndDate,				"End Date");
 	mTypeDescription.insert(E_HeaderReport,			"Header Report");

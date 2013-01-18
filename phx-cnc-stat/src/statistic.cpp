@@ -11,6 +11,7 @@
 
 #include "engine/engine.h"
 
+
 Statistic::Statistic(QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags)
 {
 	Engine::removeOldDirs();
@@ -21,9 +22,9 @@ Statistic::Statistic(QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags)
 
 	mFtp = new QFtp(this);
 	mLoadFile = NULL;
-	mProgressBar = NULL;
 	waitTimer = -1;
 	mIsArchiveAccept = false;
+	start_arch = false;
 
 	CXSettings* settings = CXSettings::inst();
 
@@ -48,17 +49,25 @@ Statistic::Statistic(QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags)
 	connect(mFtp, SIGNAL(commandStarted(int)), this, SLOT(onCommandStarted(int)));
 	connect(mFtp, SIGNAL(commandFinished(int,bool)), this, SLOT(onFtpCommandFinish(int,bool)));
 	connect(mFtp, SIGNAL(listInfo(const QUrlInfo&)), this, SLOT(onListInfo(const QUrlInfo&)));
+//	connect(mFtp, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 
-	connect(mFtp, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+	tlClient = new QtTelnet(this);
 
-#ifdef QT_NO_DEBUG
-	ui.mErrorGroupBox->hide();
-#endif
+	connect(tlClient, SIGNAL(loginRequired()), this, SLOT(telnetLoginRequired()));
+  connect(tlClient, SIGNAL(loginFailed()), this, SLOT(telnetLoginFailed()));
+  connect(tlClient, SIGNAL(connectionError(QAbstractSocket::SocketError)),
+      this, SLOT(telnetConnectionError(QAbstractSocket::SocketError)));
+  connect(tlClient, SIGNAL(message(const QString &)),this, SLOT(telnetMessage(const QString &)));
+
+//#ifdef QT_NO_DEBUG
+//	ui.mErrorGroupBox->hide();
+//#endif
 }
 
 Statistic::~Statistic()
 {
 	CXSettings::inst()->save(QApplication::applicationDirPath() + "/settings.xml");
+	tlClient->close();
 }
 
 void Statistic::onArchiveLoad()
@@ -83,8 +92,9 @@ void Statistic::onArchiveLoad()
 	if (unCompress(copyFileName))
 	{
 		QFile(copyFileName).remove();
-
 		QMessageBox::information(this, trUtf8("Внимание"), trUtf8("Архив успешно распакован"));
+		ui.curOperationLabel->setText(trUtf8("Нет текущих операций"));
+		setCursor(Qt::ArrowCursor);
 	}
 }
 
@@ -93,43 +103,79 @@ void Statistic::onFTPLoad()
 	ui.mFTPButton->setEnabled(false);
 
 	CXSettings* settings = CXSettings::inst();
+	//считываем настройки
+	host = settings->value(E_FTPHost).toString();
+  user = CXSettings::inst()->value(E_TelnetUser).toString();
+  password = CXSettings::inst()->value(E_TelnetPassword).toString();
 
-	QString createArchiveScript = settings->value(E_CreateArchiveScript).toString();
-	createArchiveScript.replace("[APP_PATH]", QApplication::applicationDirPath());
+  //приходится каждый раз убивать, так как не дает переподключатся
+  if(tlClient != NULL){
+    delete tlClient;
+    tlClient = NULL;
+  }
+  ui.curOperationLabel->setText(trUtf8("Соединение с сервером..."));
+  setCursor(Qt::WaitCursor);
+  tlClient = new QtTelnet(this);
 
-	//Запус скрипта создания архива.
-	if (QProcess::execute(createArchiveScript) != 0)
-	{
-		QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не отработал скрипт создания архива:\n[%1]").arg(settings->value(E_CreateArchiveScript).toString()));
-		return;
-	}
+  connect(tlClient, SIGNAL(loginRequired()), this, SLOT(telnetLoginRequired()));
+  connect(tlClient, SIGNAL(loginFailed()), this, SLOT(telnetLoginFailed()));
+  connect(tlClient, SIGNAL(connectionError(QAbstractSocket::SocketError)),
+      this, SLOT(telnetConnectionError(QAbstractSocket::SocketError)));
+  connect(tlClient, SIGNAL(message(const QString &)),this, SLOT(telnetMessage(const QString &)));
 
-	//Получение архива с FTP-сервера.
-	QString host = settings->value(E_FTPHost).toString();
-	int port = settings->value(E_FTPPort).toInt();
-	QString user = CXSettings::inst()->value(E_FTPUser).toString();
-	QString password = CXSettings::inst()->value(E_FTPPassword).toString();
 
-	mFtp->connectToHost(host, port);
-	if (mFtp->error() != QFtp::NoError)
-	{
-		onFtpError(trUtf8("Не удалось подключиться к FTP-серверу:\n%1").arg(mFtp->errorString()));
-
-		return;
-	}
+  //соединяемся с telnet клиентом
+  if(!tlClient->connectToHost(host, TELNET_PORT)){
+    onFtpError(trUtf8("Не удалось подключиться к Telnet-серверу. Сервер недоступен.\n[%1]").arg(host));
+  };
 }
+
+void Statistic::telnetLoginRequired(){
+  qDebug() << "loginRequired";
+  QString tmp = user + "\n" + password;
+  tlClient->sendData(tmp);
+};
+
+void Statistic::telnetLoginFailed(){
+  qDebug() << "loginFailed";
+};
+
+void Statistic::telnetConnectionError(QAbstractSocket::SocketError error){
+  qDebug() << "ConnectError";
+};
+
+void Statistic::telnetMessage(const QString &data){
+  qDebug() << "message";
+  if((data.indexOf("$",0) != -1) && (data.size() < 10) && (!start_arch)){
+    ui.curOperationLabel->setText(trUtf8("Архивирование данных..."));
+    setCursor(Qt::WaitCursor);
+    tlClient->sendData(TELNET_SCRIPT);
+    start_arch = true;
+  }else if((data.indexOf("complete",0) != -1) && (start_arch)){
+    start_arch = false;
+    tlClient->close();
+    ui.curOperationLabel->setText(trUtf8("Инициализация ftp-клиента"));
+    setCursor(Qt::WaitCursor);
+    mFtp->connectToHost(host, FTP_PORT);
+ }else if((data.indexOf("incorrect",0) != -1)){
+   //ошибка мы не подключились
+   start_arch = false;
+   onFtpError(trUtf8("Не удалось подключиться к Telnet-серверу. Неправильное имя пользователя или пароль"));
+ }  ;
+};
 
 void Statistic::onReport()
 {
+  ui.curOperationLabel->setText(trUtf8("Анализ отчета..."));
+  setCursor(Qt::WaitCursor);
 	CXSettings* settings = CXSettings::inst();
 
 	settings->setValue(E_StartDate, QDateTime(ui.mStartDateEdit->date(), ui.mStartTimeEdit->time()));
 	settings->setValue(E_EndDate, QDateTime(ui.mEndDateEdit->date(), ui.mEndTimeEdit->time()));
 
 	QStringList xmlFiles;
-
+	//QString tmp = "D:/CNC_start2";
 	QDir logsDir(QApplication::applicationDirPath() + "/" + LOG_PATH);
-
 	QString tempFileName;
 	QStringList dirs = logsDir.entryList(QDir::Dirs);
 	for (int i = 0; i < dirs.count(); ++i)
@@ -141,31 +187,31 @@ void Statistic::onReport()
 
 	QList <SXReportError> errorList = Engine::generateReport(xmlFiles, settings->value(E_StartDate).toDateTime(), settings->value(E_EndDate).toDateTime());
 
-#ifndef QT_NO_DEBUG
-	ui.mErrorTree->clear();
-
-	QTreeWidgetItem* newItem = NULL;
-	QTreeWidgetItem* childItem = NULL;
-	QString lastFilename = "";
-
-	for (int i = 0; i < errorList.count(); ++i)
-	{
-		const SXReportError& curErrorData = errorList.at(i);
-
-		if ((newItem == NULL) || ((newItem != NULL) && (lastFilename != curErrorData.mFileName)))
-		{
-			newItem = new QTreeWidgetItem(ui.mErrorTree);
-			lastFilename = curErrorData.mFileName;
-			newItem->setText(0, lastFilename);
-		}
-
-		childItem = new QTreeWidgetItem(newItem);
-		childItem->setForeground(0, Qt::red);
-		childItem->setText(0, curErrorData.mError);
-
-		ui.mErrorTree->addTopLevelItem(newItem);
-	}
-#else
+//#ifndef QT_NO_DEBUG
+//	ui.mErrorTree->clear();
+//
+//	QTreeWidgetItem* newItem = NULL;
+//	QTreeWidgetItem* childItem = NULL;
+//	QString lastFilename = "";
+//
+//	for (int i = 0; i < errorList.count(); ++i)
+//	{
+//		const SXReportError& curErrorData = errorList.at(i);
+//
+//		if ((newItem == NULL) || ((newItem != NULL) && (lastFilename != curErrorData.mFileName)))
+//		{
+//			newItem = new QTreeWidgetItem(ui.mErrorTree);
+//			lastFilename = curErrorData.mFileName;
+//			newItem->setText(0, lastFilename);
+//		}
+//
+//		childItem = new QTreeWidgetItem(newItem);
+//		childItem->setForeground(0, Qt::red);
+//		childItem->setText(0, curErrorData.mError);
+//
+//		ui.mErrorTree->addTopLevelItem(newItem);
+//	}
+//#else
 	QFile errorLog("errors.log");
 	errorLog.open(QIODevice::WriteOnly);
 
@@ -179,9 +225,11 @@ void Statistic::onReport()
 		textStream << curErrorData.mFileName << "\t-\t";
 		textStream << curErrorData.mError << "\n";
 	}
-#endif
+//#endif
 
 	ui.mReportView->setHtml(Engine::getReportText());
+	ui.curOperationLabel->setText(trUtf8("Нет текущих операций"));
+	setCursor(Qt::ArrowCursor);
 }
 
 void Statistic::onSaveReport()
@@ -197,7 +245,7 @@ void Statistic::onCommandStarted(int id)
 	{
 		case QFtp::ConnectToHost:
 		{
-			waitTimer = startTimer(1000);
+			waitTimer = startTimer(10000);
 			break;
 		}
 		default:
@@ -208,7 +256,7 @@ void Statistic::onCommandStarted(int id)
 void Statistic::onFtpCommandFinish(int id, bool aIsError)
 {
 	qDebug("commE: %d", mFtp->currentCommand());
-
+	if(aIsError) onFtpError(trUtf8("\n[%1]").arg(mFtp->errorString()));
 	switch (mFtp->currentCommand())
 	{
 		case QFtp::ConnectToHost:
@@ -218,11 +266,7 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
 			{
 				killTimer(waitTimer);
 				waitTimer = -1;
-
-				QString user = CXSettings::inst()->value(E_FTPUser).toString();
-				QString password = CXSettings::inst()->value(E_FTPPassword).toString();
-
-				mFtp->login(user, password);
+				mFtp->login(FTP_USER, FTP_PASSWORD);
 				if (mFtp->error() != QFtp::NoError)
 				{
 					onFtpError(trUtf8("Не удалось подключиться к FTP-серверу:\n[%1]").arg(mFtp->errorString()));
@@ -244,43 +288,64 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
 				onFtpError(trUtf8("Не удалось подключиться к FTP-серверу. Неверная пара логин/пароль.\n[%1]").arg(mFtp->errorString()));
 				break;
 			}
-
-			QString dir = CXSettings::inst()->value(E_FTPDir).toString();
-			if (dir != "")
-			{
-				mFtp->cd(dir);
-				if (mFtp->error() != QFtp::NoError)
-				{
-					QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось подключиться к FTP-серверу:\n%1").arg(mFtp->errorString()));
-					mFtp->close();
-					return;
-				}
-
-			}
+			ui.curOperationLabel->setText(trUtf8("Копирование архива..."));
+			setCursor(Qt::WaitCursor);
+      mFtp->cd(TELNET_ARCHIVE_PATH);
+      if (mFtp->error() != QFtp::NoError)
+      {
+        QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось подключиться к FTP-серверу:\n%1").arg(mFtp->errorString()));
+        mFtp->close();
+        return;
+      }
 			break;
 		}
 		case QFtp::Cd:
 		{
 			if (aIsError) onFtpError(trUtf8("Не удалось подключиться к FTP-серверу. Неверная пара логин/пароль.\n[%1]").arg(mFtp->errorString()));
-
-			mIsArchiveAccept = false;
-			mFtp->list();
-
+			QString tmp = "D:/CNC_stat";
+      mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
+      //new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + archiveName);
+      //mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + archiveName);
+      if (!mLoadFile->open(QIODevice::WriteOnly))
+      {
+        QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось создать файл:\n%1").arg(mLoadFile->fileName()));
+        mFtp->close();
+        return;
+      }
+      tmp = TELNET_ARCHIVE_PATH;
+      mFtp->get(tmp + ARCHIVE_NAME, mLoadFile);
+      waitTimer = startTimer(1000);
 			break;
 		}
 		case QFtp::List:
 		{
 			if (aIsError) onFtpError(trUtf8("Не удалось выполнить команду LIST.\n[%1]").arg(mFtp->errorString()));
-			if (!mIsArchiveAccept) onFtpError(trUtf8("Не удалось получить архив \"%1\" с сервера.").arg(CXSettings::inst()->value(E_ArchiveName).toString()));
+			if (!mIsArchiveAccept) onFtpError("Не удалось получить архив с сервера.");
 
 			break;
 		}
-		default:
-			break;
+		case QFtp::Get:
+    {
+      mLoadFile->close();
+      mFtp->close();
+      QString tmp = QApplication::applicationDirPath();//"D:/CNC_stat";
+      tmp = tmp + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME;
+      ui.mFTPButton->setEnabled(true);
+      if(unCompress(tmp)){
+        ui.curOperationLabel->setText(trUtf8("Нет текущих операций"));
+        setCursor(Qt::ArrowCursor);
+        QFile(tmp).remove();
+        QMessageBox::information(this, trUtf8("Внимание"), trUtf8("Архив успешно распакован"));
+        return;
+      }
+      break;
+    }
+    default:
+    break;
 
 	}
 
-	if (mFtp->currentCommand() == QFtp::Get)
+	/*if (mFtp->currentCommand() == QFtp::Get)
 	{
 		if (mProgressBar != NULL) mProgressBar->close();
 
@@ -310,59 +375,62 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
 		QMessageBox::information(this, trUtf8("Внимание"), trUtf8("Архив успешно скачан и распакован"));
 
 		ui.mFTPButton->setEnabled(true);
-	}
+	}*/
 }
 
 void Statistic::onListInfo(const QUrlInfo& aInfo)
 {
-	if (aInfo.isFile() && aInfo.name() == CXSettings::inst()->value(E_ArchiveName).toString())
-	{
-		mIsArchiveAccept = true;
-
-		if (mProgressBar == NULL)
-		{
-			mProgressBar = new QProgressDialog(this);
-
-			QProgressBar* progressBar = new QProgressBar(mProgressBar);
-			progressBar->setAlignment(Qt::AlignCenter);
-			progressBar->setRange(0, aInfo.size());
-			progressBar->setValue(0);
-
-			mProgressBar->setBar(progressBar);
-			mProgressBar->setCancelButton(NULL);
-
-			mProgressBar->setLabelText(trUtf8("Загрузка архива"));
-		}
-		else
-		{
-			mProgressBar->setRange(0, aInfo.size());
-			mProgressBar->setValue(0);
-		}
-//		mProgressBar->setModal(true);
-		mProgressBar->show();
-
-		QString archiveName = CXSettings::inst()->value(E_ArchiveName).toString();
-
-		mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + archiveName);
-		if (!mLoadFile->open(QIODevice::WriteOnly))
-		{
-			QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось создать файл:\n%1").arg(mLoadFile->fileName()));
-			mFtp->close();
-			return;
-		}
-
-		mFtp->get(archiveName);
-	}
+//	if (true)//(aInfo.isFile() && aInfo.name() == CXSettings::inst()->value(E_ArchiveName).toString())
+//	{
+//		mIsArchiveAccept = true;
+//
+//		if (mProgressBar == NULL)
+//		{
+//			mProgressBar = new QProgressDialog(this);
+//
+//			QProgressBar* progressBar = new QProgressBar(mProgressBar);
+//			progressBar->setAlignment(Qt::AlignCenter);
+//			progressBar->setRange(0, aInfo.size());
+//			progressBar->setValue(0);
+//
+//			mProgressBar->setBar(progressBar);
+//			mProgressBar->setCancelButton(NULL);
+//
+//			mProgressBar->setLabelText(trUtf8("Загрузка архива"));
+//		}
+//		else
+//		{
+//			mProgressBar->setRange(0, aInfo.size());
+//			mProgressBar->setValue(0);
+//		}
+////		mProgressBar->setModal(true);
+//		mProgressBar->show();
+//
+//		QString archiveName = CXSettings::inst()->value(E_ArchiveName).toString();
+//		QString tmp = "D:/CNC_stat/";
+//    mLoadFile = new QFile(tmp + ARCHIVE_PATH + "/" + archiveName);
+//    //new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + archiveName);
+//		//mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + archiveName);
+//		if (!mLoadFile->open(QIODevice::WriteOnly))
+//		{
+//			QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось создать файл:\n%1").arg(mLoadFile->fileName()));
+//			mFtp->close();
+//			return;
+//		}
+//
+//		mFtp->get(archiveName, mLoadFile);
+//		waitTimer = startTimer(1000);
+//	}
 }
 
-void Statistic::onReadyRead()
-{
-	if (mProgressBar != NULL)
-	{
-		mProgressBar->setValue(mProgressBar->value() + mFtp->bytesAvailable());
-		mLoadFile->write(mFtp->readAll());
-	}
-}
+//void Statistic::onReadyRead()
+//{
+//	if (mProgressBar != NULL)
+//	{
+//		mProgressBar->setValue(mProgressBar->value() + mFtp->bytesAvailable());
+//		mLoadFile->write(mFtp->readAll());
+//	}
+//}
 
 void Statistic::timerEvent(QTimerEvent* e)
 {
@@ -395,8 +463,10 @@ void Statistic::timerEvent(QTimerEvent* e)
 
 bool Statistic::unCompress(const QString& aArchiveName)
 {
-    QString unpack = "unpack.bat";
-    if (QProcess::execute(unpack) != 0)
+  ui.curOperationLabel->setText(trUtf8("Разархивирование данных..."));
+  setCursor(Qt::WaitCursor);
+  QString unpack = "unpack.bat";
+  if (QProcess::execute(unpack) != 0)
 	{
         QMessageBox::critical(this, trUtf8("Ошибка")
                               , trUtf8("Не удалось распаковать архив  "));
@@ -407,7 +477,13 @@ bool Statistic::unCompress(const QString& aArchiveName)
 
 void Statistic::onFtpError(const QString& aErrorText)
 {
-	mFtp->close();
+  if(mFtp->state() != QFtp::Unconnected)
+    mFtp->close();
+
+  ui.curOperationLabel->setText(trUtf8("Нет текущих операций"));
+  setCursor(Qt::ArrowCursor);
+  tlClient->close();
+
 	ui.mFTPButton->setEnabled(true);
 
 	if (waitTimer != -1)

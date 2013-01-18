@@ -5,9 +5,19 @@
 #include <QFtp>
 #include <QFile>
 #include <QProgressDialog>
+#include <QTcpSocket>
 
 #include "ui_statistic.h"
 #include "CXSettingsDialog.h"
+
+#include "qttelnet.h"
+
+#define FTP_USER      "ftp"
+#define FTP_PASSWORD  "ftp"
+#define FTP_PORT      21
+#define TELNET_PORT   23
+#define TELNET_ARCHIVE_PATH "/pub/updates/"
+#define TELNET_SCRIPT       "/CNC/backup_log.xml.sh"
 
 //! Класс основной формы приложения.
 class Statistic : public QWidget
@@ -19,6 +29,12 @@ public:
 	~Statistic();
 
 private slots:
+  void telnetLoginRequired();
+  void telnetLoginFailed();
+  void telnetConnectionError(QAbstractSocket::SocketError error);
+  void telnetMessage(const QString &data);
+
+
 	/*!
 		Слот загрузки и распаковки архива из файла.
 	*/
@@ -48,10 +64,10 @@ private slots:
 		Слот на получение данных от команы list.
 	*/
 	void onListInfo(const QUrlInfo& aInfo);
-	/*!
-		Слот на доступность данных для сохранения.
-	*/
-	void onReadyRead();
+//	/*!
+//		Слот на доступность данных для сохранения.
+//	*/
+//	void onReadyRead();
 
 protected:
 	void timerEvent(QTimerEvent* e);
@@ -75,7 +91,13 @@ private:
 	QFtp* mFtp;
 	QFile* mLoadFile;
 
-	QProgressDialog* mProgressBar;
+	QtTelnet* tlClient;
+	QString user;
+	QString password;
+	QString host;
+
+	bool start_arch;
+
 	int waitTimer;
 	bool mIsArchiveAccept;
 };
