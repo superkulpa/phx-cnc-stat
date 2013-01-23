@@ -157,11 +157,19 @@ void Statistic::telnetMessage(const QString &data){
     ui.curOperationLabel->setText(trUtf8("Инициализация ftp-клиента"));
     setCursor(Qt::WaitCursor);
     mFtp->connectToHost(host, FTP_PORT);
- }else if((data.indexOf("incorrect",0) != -1)){
-   //ошибка мы не подключились
-   start_arch = false;
-   onFtpError(trUtf8("Не удалось подключиться к Telnet-серверу. Неправильное имя пользователя или пароль"));
- }  ;
+  }else if((data.indexOf("fault",0) != -1) && (start_arch)){
+    start_arch = false;
+    int indx = data.indexOf("fault",0);
+    QString error = ""; int tmp = 0;
+    while(data[indx + 7 + tmp] != '\r'){
+      error += data[indx + 7 + tmp++];
+    };
+    onFtpError(trUtf8("Ошибка архивирования: \n [%1]").arg(error));
+  }else if((data.indexOf("incorrect",0) != -1)){
+    //ошибка мы не подключились
+    start_arch = false;
+    onFtpError(trUtf8("Не удалось подключиться к Telnet-серверу. Неправильное имя пользователя или пароль"));
+  };
 };
 
 void Statistic::onReport()
@@ -174,8 +182,9 @@ void Statistic::onReport()
 	settings->setValue(E_EndDate, QDateTime(ui.mEndDateEdit->date(), ui.mEndTimeEdit->time()));
 
 	QStringList xmlFiles;
-	//QString tmp = "D:/CNC_start2";
-	QDir logsDir(QApplication::applicationDirPath() + "/" + LOG_PATH);
+	QString tmp = "D:/CNC_start2";
+	QDir logsDir(tmp + "/" + LOG_PATH);
+	//QDir logsDir(QApplication::applicationDirPath() + "/" + LOG_PATH);
 	QString tempFileName;
 	QStringList dirs = logsDir.entryList(QDir::Dirs);
 	for (int i = 0; i < dirs.count(); ++i)
@@ -303,9 +312,8 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
 		{
 			if (aIsError) onFtpError(trUtf8("Не удалось подключиться к FTP-серверу. Неверная пара логин/пароль.\n[%1]").arg(mFtp->errorString()));
 			QString tmp = "D:/CNC_stat";
-      mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
-      //new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + archiveName);
-      //mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + archiveName);
+			mLoadFile = new QFile(tmp + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
+      //mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
       if (!mLoadFile->open(QIODevice::WriteOnly))
       {
         QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось создать файл:\n%1").arg(mLoadFile->fileName()));
@@ -328,7 +336,7 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
     {
       mLoadFile->close();
       mFtp->close();
-      QString tmp = QApplication::applicationDirPath();//"D:/CNC_stat";
+      QString tmp = "D:/CNC_stat";//QApplication::applicationDirPath();
       tmp = tmp + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME;
       ui.mFTPButton->setEnabled(true);
       if(unCompress(tmp)){
