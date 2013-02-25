@@ -25,17 +25,21 @@ CXSettings::CXSettings()
 	mTypeDescription.insert(E_HeaderReport,			"Header Report");
 	mTypeDescription.insert(E_FooterReport,			"Footer Report");
 	mTypeDescription.insert(E_SectionReport,		"Section Report");
+	mTypeDescription.insert(E_SectionExtReport,    "Section Ext Report");
 	mTypeDescription.insert(E_ParamReport,			"Section Param Report");
+	mTypeDescription.insert(E_ParamExtReport,      "Section Param Ext Report");
 	mTypeDescription.insert(E_LogPeriod,			"Days to keep files");
 	mTypeDescription.insert(E_IgnoredSections,		"Ignored Sections");
+	mTypeDescription.insert(E_UserName,    "User Name");
 
-
-	load(QApplication::applicationDirPath() + "/settings.xml");
+	QString tmp = QApplication::applicationDirPath();
+	load(tmp + "/settings.xml");
 }
 
 CXSettings::~CXSettings()
 {
-	save(QApplication::applicationDirPath() + "/settings.xml");
+  QString tmp = QApplication::applicationDirPath();
+	save(tmp + "/settings.xml");
 }
 
 void CXSettings::load(const QString& aFileName)

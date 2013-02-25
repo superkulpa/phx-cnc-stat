@@ -24,7 +24,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="mFTPTab">
       <property name="enabled">
@@ -83,253 +83,360 @@
       <attribute name="title">
        <string>Отчет</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
+      <widget class="QLabel" name="mHeaderReportLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>114</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Шаблон шапки отчета</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="mHeaderReportEdit">
+       <property name="geometry">
+        <rect>
+         <x>141</x>
+         <y>10</y>
+         <width>133</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QLabel" name="mFooterReportLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>36</y>
+         <width>125</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Шаблон подвала отчета</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="mFooterReportEdit">
+       <property name="geometry">
+        <rect>
+         <x>141</x>
+         <y>36</y>
+         <width>133</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QLabel" name="mSectionReportLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>62</y>
+         <width>117</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Шаблон секции отчета</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="mSectionReportEdit">
+       <property name="geometry">
+        <rect>
+         <x>141</x>
+         <y>62</y>
+         <width>133</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QLabel" name="mParamReportLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>114</y>
+         <width>105</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Шаблон поля секции</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="mParamReportEdit">
+       <property name="geometry">
+        <rect>
+         <x>141</x>
+         <y>114</y>
+         <width>133</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QLabel" name="mRemortMacrosLabel">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>165</y>
+         <width>204</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Доступные макросы в шаблоне отчетов</string>
+       </property>
+      </widget>
+      <widget class="QTableWidget" name="mRemortMacrosTable">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>184</y>
+         <width>363</width>
+         <height>152</height>
+        </rect>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
+         <string>Новая строка</string>
+        </property>
+       </row>
+       <column>
+        <property name="text">
+         <string>Новый столбец</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Новый столбец</string>
+        </property>
+       </column>
        <item row="0" column="0">
-        <widget class="QLabel" name="mHeaderReportLabel">
-         <property name="text">
-          <string>Шаблон шапки отчета</string>
-         </property>
-        </widget>
+        <property name="text">
+         <string>{Start Date}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="mHeaderReportEdit">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        <property name="text">
+         <string>Начальная дата отчета</string>
+        </property>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="mFooterReportLabel">
-         <property name="text">
-          <string>Шаблон подвала отчета</string>
-         </property>
-        </widget>
+        <property name="text">
+         <string>{End Date}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="mFooterReportEdit">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        <property name="text">
+         <string>Конечная дата отчета</string>
+        </property>
        </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="mSectionReportLabel">
-         <property name="text">
-          <string>Шаблон секции отчета</string>
-         </property>
-        </widget>
+        <property name="text">
+         <string>{Section}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="mSectionReportEdit">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        <property name="text">
+         <string>Данные по секции</string>
+        </property>
        </item>
        <item row="3" column="0">
-        <widget class="QLabel" name="mParamReportLabel">
-         <property name="text">
-          <string>Шаблон поля секции</string>
-         </property>
-        </widget>
+        <property name="text">
+         <string>{Section Descr}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
        </item>
        <item row="3" column="1">
-        <widget class="QLineEdit" name="mParamReportEdit">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        <property name="text">
+         <string>Описание секции</string>
+        </property>
        </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QLabel" name="mRemortMacrosLabel">
-         <property name="text">
-          <string>Доступные макросы в шаблоне отчетов</string>
-         </property>
-        </widget>
+       <item row="4" column="0">
+        <property name="text">
+         <string>{Params}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
        </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QTableWidget" name="mRemortMacrosTable">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <attribute name="horizontalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <column>
-          <property name="text">
-           <string>Новый столбец</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Новый столбец</string>
-          </property>
-         </column>
-         <item row="0" column="0">
-          <property name="text">
-           <string>{Start Date}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="0" column="1">
-          <property name="text">
-           <string>Начальная дата отчета</string>
-          </property>
-         </item>
-         <item row="1" column="0">
-          <property name="text">
-           <string>{End Date}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="1" column="1">
-          <property name="text">
-           <string>Конечная дата отчета</string>
-          </property>
-         </item>
-         <item row="2" column="0">
-          <property name="text">
-           <string>{Section}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="2" column="1">
-          <property name="text">
-           <string>Данные по секции</string>
-          </property>
-         </item>
-         <item row="3" column="0">
-          <property name="text">
-           <string>{Section Descr}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="3" column="1">
-          <property name="text">
-           <string>Описание секции</string>
-          </property>
-         </item>
-         <item row="4" column="0">
-          <property name="text">
-           <string>{Params}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="4" column="1">
-          <property name="text">
-           <string>Конейнер для полей секции</string>
-          </property>
-         </item>
-         <item row="5" column="0">
-          <property name="text">
-           <string>{Param Name}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="5" column="1">
-          <property name="text">
-           <string>Название параметра секции</string>
-          </property>
-         </item>
-         <item row="6" column="0">
-          <property name="text">
-           <string>{Param Value}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="6" column="1">
-          <property name="text">
-           <string>Значение параметра секции</string>
-          </property>
-         </item>
-         <item row="7" column="0">
-          <property name="text">
-           <string>{Param Descr}</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-          </property>
-         </item>
-         <item row="7" column="1">
-          <property name="text">
-           <string>Описание параметра секции</string>
-          </property>
-         </item>
-        </widget>
+       <item row="4" column="1">
+        <property name="text">
+         <string>Конейнер для полей секции</string>
+        </property>
        </item>
-      </layout>
+       <item row="5" column="0">
+        <property name="text">
+         <string>{Param Name}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
+       </item>
+       <item row="5" column="1">
+        <property name="text">
+         <string>Название параметра секции</string>
+        </property>
+       </item>
+       <item row="6" column="0">
+        <property name="text">
+         <string>{Param Value}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
+       </item>
+       <item row="6" column="1">
+        <property name="text">
+         <string>Значение параметра секции</string>
+        </property>
+       </item>
+       <item row="7" column="0">
+        <property name="text">
+         <string>{Param Descr}</string>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
+       </item>
+       <item row="7" column="1">
+        <property name="text">
+         <string>Описание параметра секции</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="mSectionExtREportLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>88</y>
+         <width>106</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Шаблон заголовка УП</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="mParamExtLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>140</y>
+         <width>118</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>IШаблон параметра УП</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="mSectionExtReportEdit">
+       <property name="geometry">
+        <rect>
+         <x>141</x>
+         <y>88</y>
+         <width>133</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="mParamExtReportEdit">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>140</y>
+         <width>133</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="mLogPeriodTab">
       <attribute name="title">

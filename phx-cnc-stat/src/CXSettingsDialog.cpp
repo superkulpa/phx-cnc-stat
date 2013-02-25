@@ -25,7 +25,9 @@ void CXSettingsDialog::showEvent(QShowEvent*)
 	ui.mHeaderReportEdit->setText(settings->value(E_HeaderReport).toString());
 	ui.mFooterReportEdit->setText(settings->value(E_FooterReport).toString());
 	ui.mSectionReportEdit->setText(settings->value(E_SectionReport).toString());
+	ui.mSectionExtReportEdit->setText(settings->value(E_SectionExtReport).toString());
 	ui.mParamReportEdit->setText(settings->value(E_ParamReport).toString());
+	ui.mParamExtReportEdit->setText(settings->value(E_ParamExtReport).toString());
 
 	ui.mLogPeriodEdit->setValue(settings->value(E_LogPeriod).toInt());
 }
