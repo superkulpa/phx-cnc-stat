@@ -13,11 +13,37 @@
 
 QString Engine::mReportText;
 
+void CombineReport(QList <SXParamData>& _reportData){
+  QList<QString> sectionName;
+  QList<QString> paramName;
+  QMap<QString,int> indxMap;
+  for(int i = 0; i < _reportData.size(); i++){
+    SXParamData curData = _reportData.at(i);
+    //объединяем только параметры, связанные с работой машины
+    if(curData.mSectionName == "Info") continue;
+    if( (sectionName.contains(curData.mSectionName))
+    &&  (paramName.contains(curData.mParamName))){
+      //совпало суммируем
+      _reportData[indxMap[curData.mParamName]].mValue += curData.mValue;
+      //удаляем за ненадобностью
+      _reportData.removeAt(i); i--;
+    }else{
+      sectionName.append(curData.mSectionName);
+      paramName.append(curData.mParamName);
+      //сохраняем позицию
+      indxMap[curData.mParamName] = i;
+    };
+  };
+};
+
+
 QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const QDateTime& aStartDate, const QDateTime& aEndDate)
 {
 	QMap <QString, SXParamData> paramData;
-
 	QList <SXReportError> errorList = fillParamsData(paramData);
+
+
+  QString tmp =   QApplication::applicationDirPath();
 
 	if (aStartDate >= aEndDate)
 	{
@@ -34,9 +60,9 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 	QDateTime curDate;
 	QDomElement rootElement, sectionElement, paramElement;
 
-	QFile headerHTML(settings->value(E_HeaderReport).toString());
+	QFile headerHTML(tmp + "/" + settings->value(E_HeaderReport).toString());
 
-	mReportText = QObject::trUtf8("<html><body>С {Start Date} по {End Date}<pre>");
+	mReportText = QObject::trUtf8("<html><body>С {Start Date} по {End Date} пользователь: {User Name} <pre>");
 
 	if (headerHTML.open(QIODevice::ReadOnly))
 	{
@@ -48,9 +74,8 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
 	mReportText = mReportText.replace("{Start Date}",	aStartDate.toString("dd.MM.yyyy hh:mm:ss"));
 	mReportText = mReportText.replace("{End Date}",		aEndDate.toString("dd.MM.yyyy hh:mm:ss"));
-
 /**/
-	QFile itemHTML(settings->value(E_SectionReport).toString());
+	QFile itemHTML(tmp + "/" + settings->value(E_SectionReport).toString());
 
 	QString sectionTemplate = QObject::trUtf8("{Section Descr}\n{Params}");
 
@@ -63,9 +88,25 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 	}
 
 	itemHTML.close();
-	itemHTML.setFileName(settings->value(E_ParamReport).toString());
 
-	QString paramTemplate = QObject::trUtf8("	{Param Descr}	{Param Value}\n");
+	itemHTML.setFileName(tmp + "/" + settings->value(E_SectionExtReport).toString());
+
+  QString sectionExtTemplate = QObject::trUtf8("{Section Descr}\n{Params}");
+
+  if (itemHTML.open(QIODevice::ReadOnly))
+  {
+    QTextStream textStream(&itemHTML);
+    textStream.setCodec(QTextCodec::codecForName("UTF-8"));
+
+    sectionExtTemplate = textStream.readAll();
+  }
+
+  itemHTML.close();
+
+	//обычные параметры
+	itemHTML.setFileName(tmp + "/" + settings->value(E_ParamReport).toString());
+
+	QString paramTemplate = QObject::trUtf8("	{Param User} {Param Descr}	{Param Value}\n");
 
 	if (itemHTML.open(QIODevice::ReadOnly))
 	{
@@ -74,8 +115,26 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
 		paramTemplate = textStream.readAll();
 	}
+
+	itemHTML.close();
+
+  //информация по УП
+  itemHTML.setFileName(tmp + "/" + settings->value(E_ParamExtReport).toString());
+
+  QString paramExtTemplate = QObject::trUtf8(" {Param User} {Param Descr}  {Param Value}\n");
+
+  if (itemHTML.open(QIODevice::ReadOnly))
+  {
+    QTextStream textStream(&itemHTML);
+    textStream.setCodec(QTextCodec::codecForName("UTF-8"));
+
+    paramExtTemplate = textStream.readAll();
+  }
+
 /**/
 	QList <SXParamData> reportData;
+	//лист расширенных параметров
+	QList <SXParamData> reportDataExt;
 
 	//Обработка xml-файла и заполнение данных для отчета в список mReportData.
 	for (int i = 0; i < aFileList.count(); ++i)
@@ -143,11 +202,14 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 			continue;
 		}
 
+
 		sectionElement = rootElement.firstChildElement("Logs");
 
 		QDateTime tempDateTime;
 		SXParamData curData;
 		SXParamData tempData;
+		SXParamData cpData; cpData.mSectionName = "Info"; cpData.mParamName = "CP_Time";
+    cpData.mValue = -1;
 
 		while (sectionElement.isElement())
 		{
@@ -170,7 +232,7 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 				}
 
 				curData.mParamName = paramElement.tagName();
-				curData.mValue = paramElement.attribute("value").toInt();
+				curData.mValue = paramElement.attribute("value").toFloat();
 
 				if (!paramData.contains(curData.mParamName))
 				{
@@ -179,17 +241,47 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 					errorList.append(curError);
 				}
 				
+
 				tempData = paramData.value(curData.mParamName);
 
 				curData.mParamDescr = tempData.mParamDescr;
-				curData.mSectionName = tempData.mSectionName;
-				curData.mSectionDescr = tempData.mSectionDescr;
-				curData.mType = tempData.mType;
+        curData.mSectionName = tempData.mSectionName;
+        curData.mSectionDescr = tempData.mSectionDescr;
+        curData.mType = tempData.mType;
+        //считываем имя пользователя
+        curData.userName = rootElement.attribute("user_name");
+
+				//проверяем не пора ли сбросить статистику
+				if(curData.mParamName == "T_Load"){
+				  //если нада скидываем
+				  if(cpData.mValue != -1)
+				    reportData.append(cpData);
+				  cpData.mValue = 0;
+				  cpData.userName = curData.userName;
+				  curData.mValue = paramElement.attribute("time").toFloat() / ticToSec;
+				  //вычисляем абсолютное время
+				  curData.sValue = curDate.addSecs(curData.mValue).toString("dd.MM.yyyy hh:mm");
+				}
+
+				if(curData.mParamName == "CP_Time"){
+          if(cpData.mValue == 0){
+            //записываем названия и продолжаем
+            cpData = curData;
+          }else{
+            cpData.mValue += curData.mValue;
+          }
+          paramElement = paramElement.nextSiblingElement();
+          continue;
+        };
+
+        if(curData.mParamName == "CP_Name")
+          curData.sValue = paramElement.attribute("value");
 
 				//если уже есть такой параметр - суммировать значение.
-				if (reportData.contains(curData))
+				if (reportData.contains(curData)
+				 && curData.mSectionName != "Info")
 				{
-					reportData[reportData.indexOf(curData)].mValue += curData.mValue;
+          reportData[reportData.indexOf(curData)].mValue += curData.mValue;
 				}
 				else //иначе - добавить.
 				{
@@ -201,7 +293,12 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
 			sectionElement = sectionElement.nextSiblingElement("Section");
 		}
+		//добавляем последнее время отработки если нада
+		if(cpData.mValue != -1)
+		  reportData.append(cpData);
 	}
+
+
 /**/
 	if (reportData.isEmpty()) mReportText.append(QObject::trUtf8("Нет накопленных данных"));
 	else
@@ -210,15 +307,23 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 		sectionDialog.exec();
 
 		QStringList ignoredSectionsList = CXSettings::inst()->value(E_IgnoredSections).toStringList();
+		QString userName = CXSettings::inst()->value(E_UserName).toString();
 
 		QString sectionName;
 		QString sectionText, paramText;
+		QString paramExtText = paramExtTemplate;
+		if(userName == QObject::trUtf8("Все")){
+      //собрать одинаковые поля по разным пользователям
+		  CombineReport(reportData);
+    }
 
 		//Заполнение данных в отчет из списка mReportData.
 		while (!reportData.isEmpty())
 		{
 			const SXParamData& curSection = reportData.first();
 			sectionName = curSection.mSectionName;
+			//вставляем имя пользователя
+      mReportText = mReportText.replace("{User Name}", userName);
 
 			if (ignoredSectionsList.contains(sectionName))
 			{
@@ -226,18 +331,57 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
 				continue;
 			}
-
 			paramText.clear();
-			sectionText = sectionTemplate;
-			sectionText = sectionText.replace("{Section}", curSection.mSectionName).replace("{Section Descr}", curSection.mSectionDescr);
+			//выбираем макет построения
+			if(sectionName == "Info"){
+			  sectionText = sectionExtTemplate;
+			  sectionText = sectionText.replace("{CP Name}", QObject::trUtf8("Имя УП"))
+			                           .replace("{T Load}", QObject::trUtf8("Время загрузки"))
+			                           .replace("{B Count}", QObject::trUtf8("Пробивки"))
+			                           .replace("{L Burn}", QObject::trUtf8("Длина реза"))
+			                           .replace("{CP Time}", QObject::trUtf8("Время отработки"));
+			}else{
+			  sectionText = sectionTemplate;
+			  sectionText = sectionText.replace("{Section}", curSection.mSectionName).replace("{Section Descr}", curSection.mSectionDescr);
+			}
 
 			for (int i = 0; i < reportData.count(); ++i)
 			{
 				const SXParamData& curData = reportData.at(i);
 
-				if (curData.mSectionName == sectionName)
+				if((userName != curData.userName) && (userName != QObject::trUtf8("Все"))) {
+				  reportData.removeAt(i);
+          --i;
+				  continue;
+        }
+				//разбираем параметры: Info в одну таблицу, остальное в другую
+        if((curData.mSectionName == "Info")
+        && (sectionName == "Info")){
+          QString name = "{"; name += curData.mParamName; name += "}";
+          paramExtText.replace(name, curData.getValue());
+          if(curData.mParamName != "CP_Time"){
+            reportData.removeAt(i);
+            --i;
+            continue;
+          }
+          //если значение времени отработки 0 то просто пропускаем
+          if(curData.mValue == 0){
+            reportData.removeAt(i);
+            --i;
+            paramExtText = paramExtTemplate;
+            continue;
+          }
+          //скидываем накопленную статистику
+          reportData.removeAt(i);
+          --i;
+          paramText.append(paramExtText);
+          paramExtText = paramExtTemplate;
+        }else if (curData.mSectionName == sectionName)
 				{
-					paramText.append(QString(paramTemplate).replace("{Param Name}", curData.mParamName).replace("{Param Descr}", curData.mParamDescr).replace("{Param Value}", curData.getValue()));
+				  paramText.append(QString(paramTemplate).replace("{Param Name}", curData.mParamName)
+                                                 .replace("{Param User}", userName)
+                                                 .replace("{Param Descr}", curData.mParamDescr)
+                                                 .replace("{Param Value}", curData.getValue()));
 					reportData.removeAt(i);
 					--i;
 				}
@@ -292,7 +436,8 @@ void Engine::removeOldDirs()
 	//если журнал хранится ограниченное количество дней.
 	if (logDays > 0)
 	{
-		QDir logsDir(QApplication::applicationDirPath() + "/" + LOG_PATH);
+	  QString tmp = QApplication::applicationDirPath();
+		QDir logsDir(tmp + "/" + LOG_PATH);
 
 		//получение списка всех папок в логе.
 		QStringList dirs = logsDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -332,7 +477,8 @@ QList <SXReportError> Engine::fillParamsData(QMap <QString, SXParamData>& aParam
 	QList <SXReportError> errorList;
 	SXReportError curError;
 
-	QString fileName = QApplication::applicationDirPath() + "/descrips.xml";
+	QString tmp = QApplication::applicationDirPath();
+	QString fileName = tmp + "/descrips.xml";
 
 	curError.mFileName = fileName;
 
