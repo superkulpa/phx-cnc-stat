@@ -14,7 +14,9 @@ struct SXParamData
 	//! Определенный оператор сравнения (для организации сортировки в списке).
 	bool operator == (const SXParamData& aData)
 	{
-		return (mSectionName == aData.mSectionName && mParamName == aData.mParamName);
+		return (mSectionName == aData.mSectionName
+		     && mParamName == aData.mParamName
+		     && userName == aData.userName);
 	}
 
 	/*!
@@ -28,7 +30,8 @@ struct SXParamData
 	*/
 	QString getValue() const
 	{
-		if (mType == "time")
+		if( (mType == "time")
+	    ||(mType == "info"))
 		{
 			int hour = 0;
 			int min = 0;
@@ -43,7 +46,7 @@ struct SXParamData
 
 		if (mType == "travel")
 		{
-			int value = mValue / 10.0;
+			int value = mValue;// / 10.0;
 
 			if (value < 1000) return QObject::trUtf8("%1 мм").arg(value);
 
@@ -53,7 +56,12 @@ struct SXParamData
 			return QObject::trUtf8("%1 м. %2 мм").arg(meters).arg(value);
 		}
 
-		return QString::number(mValue);
+		if (mType == "name")
+    {
+      return QObject::trUtf8(sValue.toStdString().c_str());
+    }
+
+    return QString::number(mValue);
 	}
 
 	QString mSectionName;	//!< Имя секции.
@@ -63,7 +71,11 @@ struct SXParamData
 	QString mParamDescr;	//!< Описание параметра.
 
 	int mValue;				//!< Значение параметра.
+	QString sValue;   //!< Значение параметра строки.
 	QString mType;			//!< Тип параметра.
+
+	QString userName; //!< имя резчика.
+
 };
 
 #endif // SXPARAMDATA_H

@@ -1,5 +1,6 @@
 #include "statistic.h"
 
+
 #include <QDomDocument>
 #include <QProcess>
 #include <QMessageBox>
@@ -11,12 +12,16 @@
 
 #include "engine/engine.h"
 
+#define VERSION  "1.0"
 
 Statistic::Statistic(QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags)
 {
 	Engine::removeOldDirs();
 
 	ui.setupUi(this);
+	QString title = trUtf8("Статистика v") + VERSION;
+	title += trUtf8(", сборка от "); title +=  __DATE__;
+	this->setWindowTitle(title);
 
 	mSettingsDialog = new CXSettingsDialog(this);
 
@@ -66,7 +71,12 @@ Statistic::Statistic(QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags)
 
 Statistic::~Statistic()
 {
-	CXSettings::inst()->save(QApplication::applicationDirPath() + "/settings.xml");
+#ifdef DEBUG_VER
+  QString tmp = "D:/CNC_stat";
+#else
+  QString tmp = QApplication::applicationDirPath();
+#endif
+	CXSettings::inst()->save(tmp + "/settings.xml");
 	tlClient->close();
 }
 
@@ -75,14 +85,18 @@ void Statistic::onArchiveLoad()
 	QString fileName = QFileDialog::getOpenFileName(NULL, trUtf8("Загрузка архива"), QString()/*, "HTML (*.html)"*/);
 
 	if (fileName.isEmpty()) return;
-
-	QDir logsDir(QApplication::applicationDirPath() + "/" + LOG_PATH);
+#ifdef DEBUG_VER
+  QString tmp = "D:/CNC_stat";
+#else
+  QString tmp = QApplication::applicationDirPath();
+#endif
+	QDir logsDir(tmp + "/" + LOG_PATH);
 	if (!logsDir.exists())
 	{
-		QDir(QApplication::applicationDirPath()).mkpath(LOG_PATH);
+		QDir(tmp).mkpath(LOG_PATH);
 	}
 
-	QString copyFileName = QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + QFileInfo(fileName).fileName();
+	QString copyFileName = tmp + "/" + ARCHIVE_PATH + "/" + QFileInfo(fileName).fileName();
 
 	if(QFile::exists(copyFileName))
 		QFile::remove(copyFileName);
@@ -182,9 +196,13 @@ void Statistic::onReport()
 	settings->setValue(E_EndDate, QDateTime(ui.mEndDateEdit->date(), ui.mEndTimeEdit->time()));
 
 	QStringList xmlFiles;
-//	QString tmp = "D:/CNC_start2";
-//	QDir logsDir(tmp + "/" + LOG_PATH);
-	QDir logsDir(QApplication::applicationDirPath() + "/" + LOG_PATH);
+#ifdef DEBUG_VER
+  QString tmp = "D:/CNC_stat";
+#else
+  QString tmp = QApplication::applicationDirPath();
+#endif
+	QDir logsDir(tmp + "/" + LOG_PATH);
+	//QDir logsDir(QApplication::applicationDirPath() + "/" + LOG_PATH);
 	QString tempFileName;
 	QStringList dirs = logsDir.entryList(QDir::Dirs);
 	for (int i = 0; i < dirs.count(); ++i)
@@ -311,9 +329,13 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
 		case QFtp::Cd:
 		{
 			if (aIsError) onFtpError(trUtf8("Не удалось подключиться к FTP-серверу. Неверная пара логин/пароль.\n[%1]").arg(mFtp->errorString()));
-			QString tmp = "D:/CNC_stat";
-			//mLoadFile = new QFile(tmp + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
-      mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
+#ifdef DEBUG_VER
+      QString tmp = "D:/CNC_stat";
+#else
+      QString tmp = QApplication::applicationDirPath();
+#endif
+			mLoadFile = new QFile(tmp + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
+      //mLoadFile = new QFile(QApplication::applicationDirPath() + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME);
       if (!mLoadFile->open(QIODevice::WriteOnly))
       {
         QMessageBox::critical(this, trUtf8("Ошибка"), trUtf8("Не удалось создать файл:\n%1").arg(mLoadFile->fileName()));
@@ -336,7 +358,11 @@ void Statistic::onFtpCommandFinish(int id, bool aIsError)
     {
       mLoadFile->close();
       mFtp->close();
-      QString tmp = QApplication::applicationDirPath();//"D:/CNC_stat";
+#ifdef DEBUG_VER
+      QString tmp = "D:/CNC_stat";
+#else
+      QString tmp = QApplication::applicationDirPath();
+#endif
       tmp = tmp + "/" + ARCHIVE_PATH + "/" + ARCHIVE_NAME;
       ui.mFTPButton->setEnabled(true);
       if(unCompress(tmp)){
