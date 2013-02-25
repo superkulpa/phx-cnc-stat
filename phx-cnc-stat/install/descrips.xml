@@ -3,6 +3,7 @@
 <Sections>
 	<General name="Основные параметры" />
 	<Alarms name="Аварии" />
+	<Info name="Информация" />
 </Sections>
 <Records>
   <_1_Control_timeout name="1.Вышло время на включения управления" sec="Alarms" />
@@ -41,5 +42,12 @@
   <WorkTime name="Время работы" sec="General" type="time"/> 
   <MPlasmaTime name="Время работы плазмы" sec="General" type="time"/> 
   <OxyTime name="Время работы газокислорода" sec="General" type="time"/> 
+  <L_Burn name="Длина реза" sec="Info" type="travel"/> 
+  <CP_Name name="Имя УП" sec="Info" type="name"/> 
+  <L_Work name="Длина перемещений" sec="Info" type="travel"/> 
+  <B_Count name="Количество пробивок" sec="Info"/> 
+  <T_Load name="Время загрузки УП" sec="Info" type="name"/> 
+  <CP_Time name="Время отработки УП" sec="Info" type="time"/> 
+  
 </Records>
 </Descriptions>
