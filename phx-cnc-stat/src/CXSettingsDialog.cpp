@@ -5,8 +5,9 @@
 CXSettingsDialog::CXSettingsDialog(QWidget* parent) : QDialog(parent)
 {
 	ui.setupUi(this);
-	
+	ui.tabWidget->setCurrentIndex(0);
 	connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onCurrentTabChange(int)));
+	
 }
 
 CXSettingsDialog::~CXSettingsDialog()

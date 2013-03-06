@@ -137,7 +137,6 @@ void Statistic::onFTPLoad()
       this, SLOT(telnetConnectionError(QAbstractSocket::SocketError)));
   connect(tlClient, SIGNAL(message(const QString &)),this, SLOT(telnetMessage(const QString &)));
 
-
   //соединяемся с telnet клиентом
   if(!tlClient->connectToHost(host, TELNET_PORT)){
     onFtpError(trUtf8("Не удалось подключиться к Telnet-серверу. Сервер недоступен.\n[%1]").arg(host));
@@ -156,11 +155,12 @@ void Statistic::telnetLoginFailed(){
 
 void Statistic::telnetConnectionError(QAbstractSocket::SocketError error){
   qDebug() << "ConnectError";
+  onFtpError(trUtf8("Не удалось подключиться к Telnet-серверу, соединение оборвалось"));
 };
 
 void Statistic::telnetMessage(const QString &data){
   qDebug() << "message";
-  if((data.indexOf("$",0) != -1) && (data.size() < 10) && (!start_arch)){
+  if(((((data.indexOf("$",0) != -1) || (data.indexOf("#",0) != -1)) && (data.size() < 10)) || (data.indexOf("Welcome",0) != -1)) && (!start_arch)){
     ui.curOperationLabel->setText(trUtf8("Архивирование данных..."));
     setCursor(Qt::WaitCursor);
     tlClient->sendData(TELNET_SCRIPT);
@@ -489,7 +489,7 @@ void Statistic::timerEvent(QTimerEvent* e)
 				break;
 			}
 			default:
-				break;
+      break;
 
 		}
 	}
@@ -502,8 +502,14 @@ bool Statistic::unCompress(const QString& aArchiveName)
   QString unpack = "unpack.bat";
   if (QProcess::execute(unpack) != 0)
 	{
-        QMessageBox::critical(this, trUtf8("Ошибка")
-                              , trUtf8("Не удалось распаковать архив  "));
+    QMessageBox::critical(this, trUtf8("Ошибка")
+                          , trUtf8("Не удалось распаковать архив"));
+//    if(mFtp->state() != QFtp::Unconnected)
+//      mFtp->close();
+    start_arch = false;
+    ui.curOperationLabel->setText(trUtf8("Нет текущих операций"));
+    setCursor(Qt::ArrowCursor);
+
 		return false;
 	}
 	return true;
@@ -513,7 +519,7 @@ void Statistic::onFtpError(const QString& aErrorText)
 {
   if(mFtp->state() != QFtp::Unconnected)
     mFtp->close();
-
+  start_arch = false;
   ui.curOperationLabel->setText(trUtf8("Нет текущих операций"));
   setCursor(Qt::ArrowCursor);
   tlClient->close();
