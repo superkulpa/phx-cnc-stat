@@ -12,7 +12,7 @@
 
 #include "engine/engine.h"
 
-#define VERSION  "1.0"
+#define VERSION  "1.2"
 
 Statistic::Statistic(QWidget *parent, Qt::WFlags flags) : QWidget(parent, flags)
 {
