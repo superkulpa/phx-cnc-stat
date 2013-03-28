@@ -283,7 +283,7 @@ void Statistic::onCommandStarted(int id)
 void Statistic::onFtpCommandFinish(int id, bool aIsError)
 {
 	qDebug("commE: %d", mFtp->currentCommand());
-	if(aIsError) onFtpError(trUtf8("\n[%1]").arg(mFtp->errorString()));
+	if(aIsError) return onFtpError(trUtf8("\n[%1]").arg(mFtp->errorString()));
 	switch (mFtp->currentCommand())
 	{
 		case QFtp::ConnectToHost:

@@ -11,7 +11,7 @@
 //! Относительный путь копирования архивов
 #define ARCHIVE_PATH "logs"
 
-#define ARCHIVE_NAME "LOG.tar.gz"
+#define ARCHIVE_NAME "logs.xml.tar.gz"
 
 //! Структура с данными по ошибкам генерации отчета.
 struct SXReportError
