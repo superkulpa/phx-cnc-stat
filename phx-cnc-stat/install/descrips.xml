@@ -32,10 +32,10 @@
   <_25_Limit_Z6F name="25.Концевик Z6+" sec="Alarms" />   
   <_26_Limit_Z7F name="26.Концевик Z7+" sec="Alarms" />   
   <_27_Limit_Z8F name="27.Концевик Z8+" sec="Alarms" />   
-  <_1_19_Limit_Z1- name="1.19.Концевик Z1-" sec="Alarms" />  
-  <_1_20_Limit_Z2- name="1.20.Концевик Z2-" sec="Alarms" />  
-  <_1_21_Limit_Z3- name="1.21.Концевик Z3-" sec="Alarms" />  
-  <_1_22_Limit_Z4- name="1.22.Концевик Z4-" sec="Alarms" />  
+  <_1_19_Limit_Z1B name="1.19.Концевик Z1-" sec="Alarms" />  
+  <_1_20_Limit_Z2B name="1.20.Концевик Z2-" sec="Alarms" />  
+  <_1_21_Limit_Z3B name="1.21.Концевик Z3-" sec="Alarms" />  
+  <_1_22_Limit_Z4B name="1.22.Концевик Z4-" sec="Alarms" />  
   <_1_11_Z1_drive_not_Ready name="1.11.Нет готовности привода Z1" sec="Alarms" />  
   <_1_12_Z2_drive_not_Ready name="1.12.Нет готовности привода Z2" sec="Alarms" />  
   <_1_13_Z3_drive_not_Ready name="1.13.Нет готовности привода Z3" sec="Alarms" />  
