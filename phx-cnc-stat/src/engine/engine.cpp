@@ -12,6 +12,7 @@
 #include "../SXParamData.h"
 
 QString Engine::mReportText;
+QMap <QString, QString>Engine::sections;
 
 void CombineReport(QList <SXParamData>& _reportData){
   QList<QString> sectionName;
@@ -318,16 +319,18 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
     }
 
 		//Заполнение данных в отчет из списка mReportData.
+		int nSect = 0;
 		while (!reportData.isEmpty())
 		{
-			const SXParamData& curSection = reportData.first();
-			sectionName = curSection.mSectionName;
+			//const SXParamData& curSection = reportData.first();
+			//sectionName = curSection.mSectionName;
+			sectionName = sections.keys().at(nSect++);
 			//вставляем имя пользователя
       mReportText = mReportText.replace("{User Name}", userName);
 
 			if (ignoredSectionsList.contains(sectionName))
 			{
-				reportData.removeFirst();
+				//reportData.removeFirst();
 
 				continue;
 			}
@@ -342,13 +345,18 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 			                           .replace("{CP Time}", QObject::trUtf8("Время отработки"));
 			}else{
 			  sectionText = sectionTemplate;
-			  sectionText = sectionText.replace("{Section}", curSection.mSectionName).replace("{Section Descr}", curSection.mSectionDescr);
+			  sectionText = sectionText.replace("{Section}", sectionName/*curSection.mSectionName*/)
+			               .replace("{Section Descr}", sections.value(sectionName));
 			}
 
 			for (int i = 0; i < reportData.count(); ++i)
 			{
 				const SXParamData& curData = reportData.at(i);
-
+				if(ignoredSectionsList.contains(curData.mSectionName)){
+				  reportData.removeAt(i);
+          --i;
+          continue;
+				}
 				if((userName != curData.userName) && (userName != QObject::trUtf8("Все"))) {
 				  reportData.removeAt(i);
           --i;
@@ -386,9 +394,10 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 					--i;
 				}
 			}
-
-			sectionText = sectionText.replace("{Params}", paramText);
-			mReportText.append(sectionText);
+			if(paramText.size() > 1){
+			  sectionText = sectionText.replace("{Params}", paramText);
+			  mReportText.append(sectionText);
+			}
 		}
 	}
 /**/
@@ -512,8 +521,6 @@ QList <SXReportError> Engine::fillParamsData(QMap <QString, SXParamData>& aParam
 	QDomElement rootElement = domDocument.documentElement();
 	QDomElement sectionsElement = rootElement.firstChildElement("Sections");
 
-	QMap <QString, QString> sections;
-
 	if (sectionsElement.isElement())
 	{
 		sectionsElement = sectionsElement.firstChildElement();
@@ -521,7 +528,6 @@ QList <SXReportError> Engine::fillParamsData(QMap <QString, SXParamData>& aParam
 		while (sectionsElement.isElement())
 		{
 			sections.insert(sectionsElement.tagName(), sectionsElement.attribute("name"));
-
 			sectionsElement = sectionsElement.nextSiblingElement();
 		}
 	}

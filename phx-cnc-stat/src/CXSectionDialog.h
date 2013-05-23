@@ -8,7 +8,8 @@ struct SXParamData;
 class CXSectionDialog : public QDialog
 {
 	Q_OBJECT
-
+public:
+	QString GetSection(int _indx);
 public:
 	CXSectionDialog(const QList <SXParamData>& aReportData, QWidget* parent = 0);
 	~CXSectionDialog();

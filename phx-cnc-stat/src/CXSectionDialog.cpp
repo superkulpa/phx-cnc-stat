@@ -48,6 +48,11 @@ CXSectionDialog::CXSectionDialog(const QList <SXParamData>& aReportData, QWidget
 	}
 }
 
+QString CXSectionDialog::GetSection(int _indx){
+  if(_indx > ui.mSectionList->count()) return "-1";
+  return ui.mSectionList->item(_indx)->text();
+};
+
 CXSectionDialog::~CXSectionDialog()
 {
 

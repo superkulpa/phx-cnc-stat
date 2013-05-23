@@ -61,6 +61,7 @@ public:
 
 private:
 	static QString mReportText;
+	static QMap <QString, QString> sections;
 };
 
 #endif // CXREPORTMANAGER_H
