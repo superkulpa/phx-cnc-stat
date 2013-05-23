@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <Descriptions>
 <Sections>
-	<General name="Основные параметры" />
 	<Alarms name="Аварии" />
+	<General name="Основные параметры" />
 	<Info name="Информация" />
+	<Aaa name="Основные параметры" />
 </Sections>
 <Records>
   <_1_Control_timeout name="1.Вышло время на включения управления" sec="Alarms" />
@@ -45,6 +46,7 @@
   <_29_Marker_not_ready name="29.Нет готовности маркера" sec="Alarms" />   
   <WorkTime name="Время работы" sec="General" type="time"/> 
   <MPlasmaTime name="Время работы плазмы" sec="General" type="time"/> 
+  <PlasmaTime name="Время работы плазмы" sec="General" type="time"/> 
   <OxyTime name="Время работы газокислорода" sec="General" type="time"/> 
   <L_Burn name="Длина реза" sec="Info" type="travel"/> 
   <CP_Name name="Имя УП" sec="Info" type="name"/> 
