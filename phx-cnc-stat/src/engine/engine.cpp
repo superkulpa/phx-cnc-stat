@@ -12,6 +12,8 @@
 #include "../SXParamData.h"
 
 QString Engine::mReportText;
+QString Engine::mText;
+
 QMap <QString, QString>Engine::sections;
 
 void CombineReport(QList <SXParamData>& _reportData){
@@ -64,6 +66,7 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 	QFile headerHTML(tmp + "/" + settings->value(E_HeaderReport).toString());
 
 	mReportText = QObject::trUtf8("<html><body>С {Start Date} по {End Date} пользователь: {User Name} <pre>");
+	mText = QObject::trUtf8("С {Start Date} по {End Date} пользователь: {User Name}\n");
 
 	if (headerHTML.open(QIODevice::ReadOnly))
 	{
@@ -75,10 +78,14 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
 	mReportText = mReportText.replace("{Start Date}",	aStartDate.toString("dd.MM.yyyy hh:mm:ss"));
 	mReportText = mReportText.replace("{End Date}",		aEndDate.toString("dd.MM.yyyy hh:mm:ss"));
+	mText = mText.replace("{Start Date}",	aStartDate.toString("dd.MM.yyyy hh:mm:ss"));
+	mText = mText.replace("{End Date}",	aStartDate.toString("dd.MM.yyyy hh:mm:ss"));
 /**/
 	QFile itemHTML(tmp + "/" + settings->value(E_SectionReport).toString());
 
 	QString sectionTemplate = QObject::trUtf8("{Section Descr}\n{Params}");
+
+	QString sectionTextTemplate = QObject::trUtf8("{Section Descr}\n{Params}");
 
 	if (itemHTML.open(QIODevice::ReadOnly))
 	{
@@ -104,10 +111,26 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
   itemHTML.close();
 
+  itemHTML.setFileName(tmp + "/" + settings->value(E_SectionExtTextReport).toString());
+
+  QString sectionExtTextTemplate = QObject::trUtf8("{Section Descr}\n{Params}");
+
+	if (itemHTML.open(QIODevice::ReadOnly))
+	{
+		QTextStream textStream(&itemHTML);
+		textStream.setCodec(QTextCodec::codecForName("UTF-8"));
+
+		sectionExtTextTemplate = textStream.readAll();
+	}
+
+	itemHTML.close();
+
+
 	//обычные параметры
 	itemHTML.setFileName(tmp + "/" + settings->value(E_ParamReport).toString());
 
 	QString paramTemplate = QObject::trUtf8("	{Param User} {Param Descr}	{Param Value}\n");
+	QString paramTextTemplate = QObject::trUtf8("	{Param User} {Param Descr}	{Param Value}\n");
 
 	if (itemHTML.open(QIODevice::ReadOnly))
 	{
@@ -131,6 +154,18 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
     paramExtTemplate = textStream.readAll();
   }
+  itemHTML.close();
+
+  itemHTML.setFileName(tmp + "/" + settings->value(E_ParamExtTextReport).toString());
+  QString paramExtTextTemplate = QObject::trUtf8(" {Param User} {Param Descr}  {Param Value}\n");
+  if (itemHTML.open(QIODevice::ReadOnly))
+	{
+		QTextStream textStream(&itemHTML);
+		textStream.setCodec(QTextCodec::codecForName("UTF-8"));
+
+		paramExtTextTemplate = textStream.readAll();
+	}
+  itemHTML.close();
 
 /**/
 	QList <SXParamData> reportData;
@@ -301,8 +336,10 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
 
 /**/
-	if (reportData.isEmpty()) mReportText.append(QObject::trUtf8("Нет накопленных данных"));
-	else
+	if (reportData.isEmpty()){
+		mReportText.append(QObject::trUtf8("Нет накопленных данных"));
+		mText.append(QObject::trUtf8("Нет накопленных данных"));
+	}	else
 	{
 		CXSectionDialog sectionDialog(reportData);
 		sectionDialog.exec();
@@ -312,7 +349,12 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 
 		QString sectionName;
 		QString sectionText, paramText;
+		QString sectionName_t;
+		QString sectionText_t, paramText_t;
+
 		QString paramExtText = paramExtTemplate;
+		QString paramExtText_t = paramExtTextTemplate;
+
 		if(userName == QObject::trUtf8("Все")){
       //собрать одинаковые поля по разным пользователям
 		  CombineReport(reportData);
@@ -327,6 +369,7 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 			sectionName = sections.keys().at(nSect++);
 			//вставляем имя пользователя
       mReportText = mReportText.replace("{User Name}", userName);
+      mText = mText.replace("{User Name}", userName);
 
 			if (ignoredSectionsList.contains(sectionName))
 			{
@@ -335,18 +378,29 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
 				continue;
 			}
 			paramText.clear();
+			paramText_t.clear();
 			//выбираем макет построения
 			if(sectionName == "Info"){
 			  sectionText = sectionExtTemplate;
+			  sectionText_t = sectionExtTextTemplate;
 			  sectionText = sectionText.replace("{CP Name}", QObject::trUtf8("Имя УП"))
 			                           .replace("{T Load}", QObject::trUtf8("Время загрузки"))
 			                           .replace("{B Count}", QObject::trUtf8("Пробивки"))
 			                           .replace("{L Burn}", QObject::trUtf8("Длина реза"))
 			                           .replace("{CP Time}", QObject::trUtf8("Время отработки"));
+			  sectionText_t = sectionText_t.replace("{CP Name}", QObject::trUtf8("Имя УП"))
+																 .replace("{T Load}", QObject::trUtf8("Время загрузки"))
+																 .replace("{B Count}", QObject::trUtf8("Пробивки"))
+																 .replace("{L Burn}", QObject::trUtf8("Длина реза"))
+																 .replace("{CP Time}", QObject::trUtf8("Время отработки"));
 			}else{
 			  sectionText = sectionTemplate;
+			  sectionText_t = "";//sectionTextTemplate;
+
 			  sectionText = sectionText.replace("{Section}", sectionName/*curSection.mSectionName*/)
 			               .replace("{Section Descr}", sections.value(sectionName));
+			  sectionText_t = sectionText_t.replace("{Section}", sectionName/*curSection.mSectionName*/)
+										 .replace("{Section Descr}", sections.value(sectionName));
 			}
 
 			for (int i = 0; i < reportData.count(); ++i)
@@ -367,6 +421,11 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
         && (sectionName == "Info")){
           QString name = "{"; name += curData.mParamName; name += "}";
           paramExtText.replace(name, curData.getValue());
+          if((curData.mParamName != "CP_Time") || (curData.mParamName != "LBurn")){
+          	paramExtText_t.replace(name, curData.getValue(1));
+					}else
+						paramExtText_t.replace(name, curData.getValue());
+
           if(curData.mParamName != "CP_Time"){
             reportData.removeAt(i);
             --i;
@@ -377,26 +436,36 @@ QList <SXReportError> Engine::generateReport(const QStringList& aFileList, const
             reportData.removeAt(i);
             --i;
             paramExtText = paramExtTemplate;
+            paramExtText_t = paramExtTextTemplate;
             continue;
           }
           //скидываем накопленную статистику
           reportData.removeAt(i);
           --i;
           paramText.append(paramExtText);
+          paramText_t.append(paramExtText_t);
           paramExtText = paramExtTemplate;
+          paramExtText_t = paramExtTextTemplate;
         }else if (curData.mSectionName == sectionName)
 				{
 				  paramText.append(QString(paramTemplate).replace("{Param Name}", curData.mParamName)
                                                  .replace("{Param User}", userName)
                                                  .replace("{Param Descr}", curData.mParamDescr)
                                                  .replace("{Param Value}", curData.getValue()));
+				  paramText_t.append(QString(paramTextTemplate).replace("{Param Name}", curData.mParamName)
+																											 .replace("{Param User}", userName)
+																											 .replace("{Param Descr}", curData.mParamDescr)
+																											 .replace("{Param Value}", curData.getValue()));
 					reportData.removeAt(i);
 					--i;
 				}
 			}
 			if(paramText.size() > 1){
 			  sectionText = sectionText.replace("{Params}", paramText);
+			  sectionText_t = sectionText_t.replace("{Params}", paramText_t);
 			  mReportText.append(sectionText);
+			  if(sectionText_t.size() > 1)
+			  	mText.append(sectionText_t);
 			}
 		}
 	}
@@ -423,7 +492,7 @@ QString Engine::getReportText()
 
 void Engine::saveReport()
 {
-	QString fileName = QFileDialog::getSaveFileName(NULL, QObject::trUtf8("Сохранение отчета"), QString(), "HTML (*.html)");
+	QString fileName = QFileDialog::getSaveFileName(NULL, QObject::trUtf8("Сохранение отчета"), QString(), "HTML (*.html);;Text files (*.txt)");
 
 	if (fileName.isEmpty()) return;
 
@@ -436,6 +505,16 @@ void Engine::saveReport()
 	textStream << mReportText;
 
 	file.close();
+
+	QFile fileTXT(fileName+".xls");
+
+	if (!fileTXT.open(QIODevice::WriteOnly)) return;
+
+	QTextStream textStreamTXT(&fileTXT);
+	textStreamTXT.setCodec(QTextCodec::codecForName("UTF-8"));
+	textStreamTXT << mText;
+
+	fileTXT.close();
 }
 
 void Engine::removeOldDirs()
