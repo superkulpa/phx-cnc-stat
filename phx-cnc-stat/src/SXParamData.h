@@ -28,11 +28,12 @@ struct SXParamData
 				- travel - тип параметра, значением которого является длина в 0,1 миллиметра.
 				- другой тип является целочисленным и просто происходит его суммирование.
 	*/
-	QString getValue() const
+	QString getValue(bool _txt = 0) const
 	{
 		if( (mType == "time")
 	    ||(mType == "info"))
 		{
+			if (_txt) return QObject::trUtf8("%1").arg(mValue);
 			int hour = 0;
 			int min = 0;
 			int sec = 0;
@@ -48,6 +49,7 @@ struct SXParamData
 
 		if (mType == "travel")
 		{
+			if (_txt) return QObject::trUtf8("%1").arg(mValue);
 			int value = mValue;// / 10.0;
 
 			if (value < 1000) return QObject::trUtf8("%1 мм").arg(value);

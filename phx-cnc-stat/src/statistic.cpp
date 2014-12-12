@@ -499,7 +499,7 @@ bool Statistic::unCompress(const QString& aArchiveName)
 {
   ui.curOperationLabel->setText(trUtf8("Разархивирование данных..."));
   setCursor(Qt::WaitCursor);
-  QString unpack = "unpack.bat";
+  QString unpack = "./unpack.sh " + aArchiveName;
   if (QProcess::execute(unpack) != 0)
 	{
     QMessageBox::critical(this, trUtf8("Ошибка")
