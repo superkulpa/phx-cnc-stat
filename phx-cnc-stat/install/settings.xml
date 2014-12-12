@@ -3,15 +3,17 @@
 	<Param desrc="FTP Host" type="1" value="192.168.0.24"/>
 	<Param desrc="FTP User" type="2" value="cust"/>
 	<Param desrc="FTP Password" type="3" value="cust"/>
-	<Param desrc="Start Date" type="4" value="2013-02-25T07:01:00"/>
-	<Param desrc="End Date" type="5" value="2013-03-05T20:00:00"/>
+	<Param desrc="Start Date" type="4" value="2013-12-01T07:01:00"/>
+	<Param desrc="End Date" type="5" value="2013-12-31T20:00:00"/>
 	<Param desrc="Header Report" type="6" value="header.templ"/>
 	<Param desrc="Footer Report" type="7" value="footer.templ"/>
 	<Param desrc="Section Report" type="8" value="section.templ"/>
 	<Param desrc="Section Ext Report" type="9" value="section.ext.templ"/>
-	<Param desrc="Section Param Report" type="10" value="param.templ"/>
-	<Param desrc="Section Param Ext Report" type="11" value="param.ext.templ"/>
-	<Param desrc="Days to keep files" type="12" value="0"/>
-	<Param desrc="Ignored Sections" type="13" value=""/>
-	<Param desrc="User Name" type="14" value="Âñå"/>
+	<Param desrc="Section Ext Text Report" type="10" value="section.ext.txt.templ"/>
+	<Param desrc="Section Param Report" type="11" value="param.templ"/>
+	<Param desrc="Section Param Ext Report" type="12" value="param.ext.templ"/>
+	<Param desrc="Section Param Ext Text Report" type="13" value="param.ext.txt.templ"/>
+	<Param desrc="Days to keep files" type="14" value="0"/>
+	<Param desrc="Ignored Sections" type="15" value=""/>
+	<Param desrc="User Name" type="16" value="Ð’ÑÐµ"/>
 </Settings>
